@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Pelanggaran</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <style>
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+
+            .sidebar,
+            .btn,
+            .filter-grid,
+            .page-header {
+                display: none !important;
+            }
+
+            .main-content {
+                margin: 0;
+                padding: 0;
+            }
+
+            .glass-panel {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+            }
+
+            table {
+                border: 1px solid black;
+            }
+
+            th {
+                background: #eee;
+                color: black;
+                border: 1px solid black;
+                padding: 5px;
+            }
+
+            td {
+                border: 1px solid black;
+                color: black;
+                padding: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="glass-panel">
+            <div class="flex justify-between mb-4 page-header">
+                <div>
+                    <h3>Laporan Pelanggaran</h3>
+                    <p class="text-muted">Filter dan export data pelanggaran</p>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="window.print()" class="btn btn-outline"><i class='bx bxs-printer'></i> PDF /
+                        Print</button>
+                    <button onclick="exportExcel()" class="btn btn-primary" style="background: #10b981;"><i
+                            class='bx bxs-spreadsheet'></i> Excel</button>
+                </div>
+            </div>
+
+            <!-- FILTER SECTION -->
+            <div
+                style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                <small class="text-muted" style="display:block; margin-bottom:10px;">Filter Data:</small>
+                <div class="filter-grid">
+                    <div>
+                        <label class="form-label" style="font-size:0.8em">Dari Tanggal</label>
+                        <input type="date" id="startDate" class="form-input">
+                    </div>
+                    <div>
+                        <label class="form-label" style="font-size:0.8em">Sampai Tanggal</label>
+                        <input type="date" id="endDate" class="form-input">
+                    </div>
+                    <div>
+                        <label class="form-label" style="font-size:0.8em">Nama Santri</label>
+                        <input type="text" id="filterNama" class="form-input" placeholder="Cari Nama...">
+                    </div>
+                    <div>
+                        <label class="form-label" style="font-size:0.8em">Kelas</label>
+                        <input type="text" id="filterKelas" class="form-input" placeholder="Semua Kelas">
+                    </div>
+                    <div>
+                        <label class="form-label" style="font-size:0.8em">Asrama / Kamar</label>
+                        <input type="text" id="filterAsrama" class="form-input" placeholder="Semua Asrama">
+                    </div>
+                    <div style="display:flex; align-items:end;">
+                        <button onclick="loadReport()" class="btn btn-primary w-100"><i class='bx bx-filter'></i>
+                            Tampilkan</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <div class="table-container">
+                    <table id="reportTable">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Nama Santri</th>
+                                <th>Kelas</th>
+                                <th>Pelanggaran</th>
+                                <th>Status</th>
+                                <th>Penanganan / Petugas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportBody">
+                            <tr>
+                                <td colspan="6" class="text-center">Silakan set tanggal dan klik Tampilkan</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-muted mt-2" id="resultCount" style="font-size: 0.9em; text-align: right;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            renderLayout('laporan');
+            document.getElementById('pageTitle').innerText = 'Laporan';
+            document.getElementById('pageSubtitle').innerText = 'Export & Filter';
+
+            // Default: Hari ini
+            const now = new Date();
+            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+            document.getElementById('startDate').value = firstDay.toISOString().split('T')[0];
+            document.getElementById('endDate').value = now.toISOString().split('T')[0];
+
+            loadReport();
+        });
+
+        // Global variable untuk menyimpan raw data dari server
+        let rawData = [];
+        let filteredData = [];
+
+        async function loadReport() {
+            const start = document.getElementById('startDate').value;
+            const end = document.getElementById('endDate').value;
+
+            const tbody = document.getElementById('reportBody');
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center">Memuat data...</td></tr>';
+
+            // 1. Ambil data dari API
+            const res = await apiCall(`pelanggaran.php?action=list&start=${start}&end=${end}`);
+
+            if (res && res.data) {
+                rawData = res.data;
+                applyFilters(); // 2. Terapkan filter teks
+            } else {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Gagal memuat data</td></tr>';
+            }
+        }
+
+        // Fungsi filter client-side yang responsif
+        function applyFilters() {
+            const fNama = document.getElementById('filterNama').value.toLowerCase();
+            const fKelas = document.getElementById('filterKelas').value.toLowerCase();
+            const fAsrama = document.getElementById('filterAsrama').value.toLowerCase();
+
+            // Filter Array
+            filteredData = rawData.filter(row => {
+                const matchNama = row.nama?.toLowerCase().includes(fNama) || false;
+                const matchKelas = row.kelas?.toLowerCase().includes(fKelas) || false;
+                const matchAsrama = row.asrama?.toLowerCase().includes(fAsrama) || false;
+                return matchNama && matchKelas && matchAsrama;
+            });
+
+            renderTable(filteredData);
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('reportBody');
+            tbody.innerHTML = '';
+
+            if (data.length > 0) {
+                document.getElementById('resultCount').innerText = `Menampilkan ${data.length} data`;
+
+                data.forEach(row => {
+                    // Warna status
+                    let color = 'white';
+                    if (row.status_penanganan?.includes('Selesai')) color = '#22c55e';
+                    else if (row.status_penanganan?.includes('Belum')) color = '#ef4444';
+                    else color = '#f59e0b';
+
+                    // Info Petugas
+                    const pelapor = row.pencatat || 'System';
+                    const penangan = row.penangan ? row.penangan : '-';
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${row.tanggal_kejadian}</td>
+                            <td>
+                                <strong>${row.nama}</strong><br>
+                                <small style="opacity:0.7">${row.santri_nis}</small>
+                            </td>
+                            <td>
+                                ${row.kelas}<br>
+                                <small style="opacity:0.7">${row.asrama}</small>
+                            </td>
+                            <td>
+                                ${row.jenis_pelanggaran}<br>
+                                <span style="font-size:0.8em; opacity:0.7; border:1px solid rgba(255,255,255,0.2); padding: 0 4px; border-radius:4px;">${row.kategori}</span>
+                            </td>
+                            <td style="color:${color}; font-weight:bold;">${row.status_penanganan || 'Belum'}</td>
+                            <td>
+                                <div style="font-size:0.9em; line-height:1.4em;">
+                                    Tindakan: ${row.tindakan_diambil || '-'}<br>
+                                    <small style="opacity:0.6; display:block; margin-top:4px; border-top:1px solid rgba(255,255,255,0.1); padding-top:4px;">
+                                        <i class='bx bxs-user-voice'></i> Lapor: ${pelapor}<br>
+                                        <i class='bx bxs-user-check'></i> Eksekusi: ${penangan}
+                                    </small>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada data yang cocok dengan filter</td></tr>';
+                document.getElementById('resultCount').innerText = '';
+            }
+        }
+
+        // Tambahkan event listener 
+        ['filterNama', 'filterKelas', 'filterAsrama'].forEach(id => {
+            document.getElementById(id).addEventListener('keyup', applyFilters);
+        });
+
+        function exportExcel() {
+            if (filteredData.length === 0) {
+                alert('Tidak ada data untuk diexport');
+                return;
+            }
+
+            // Format data untuk excel agar rapi (termasuk kolom petugas)
+            const excelData = filteredData.map(row => ({
+                "Tanggal": row.tanggal_kejadian,
+                "NIS": row.santri_nis,
+                "Nama Santri": row.nama,
+                "Kelas": row.kelas,
+                "Asrama": row.asrama,
+                "Pelanggaran": row.jenis_pelanggaran,
+                "Status": row.status_penanganan,
+                "Tindakan": row.tindakan_diambil || '-',
+                "Pelapor": row.pencatat || 'System',
+                "Penangan (Eksekutor)": row.penangan || '-'
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(excelData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Laporan SimpelPanel");
+            XLSX.writeFile(wb, "Laporan_Pelanggaran_Lengkap.xlsx");
+        }
+    </script>
+</body>
+
+</html>

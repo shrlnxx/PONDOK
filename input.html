@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Pelanggaran</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css?v=2">
+</head>
+
+<body>
+    <div id="app">
+        <div class="glass-panel" style="max-width: 800px; margin: 0 auto;">
+            <h3 class="mb-3">Form Pelanggaran Baru</h3>
+
+            <form id="formInput">
+                <!-- SEARCH SECTION -->
+                <div class="form-group" style="position: relative; z-index: 50;">
+                    <label class="form-label">Cari Nama Santri / NIS</label>
+                    <input type="text" id="fieldSearch" class="form-input" placeholder="Ketik minimal 2 huruf..."
+                        autocomplete="off">
+                    <input type="hidden" id="fieldNIS" name="santri_nis" required>
+
+                    <!-- DROPDOWN HASIL PENCARIAN -->
+                    <div id="dropdownResult" class="search-dropdown hidden"></div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Kelas</label>
+                        <input type="text" id="fieldKelas" class="form-input" readonly
+                            style="background: rgba(0,0,0,0.3);">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Asrama</label>
+                        <input type="text" id="fieldAsrama" class="form-input" readonly
+                            style="background: rgba(0,0,0,0.3);">
+                    </div>
+                </div>
+
+                <div class="form-group mt-4">
+                    <label class="form-label">Tanggal Kejadian</label>
+                    <input type="date" id="fieldTanggal" name="tanggal_kejadian" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Jenis Pelanggaran</label>
+                    <input type="text" id="fieldJenis" name="jenis" class="form-input"
+                        placeholder="Contoh: Kabur dari pondok" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Kategori</label>
+                    <select name="kategori" class="form-select" required>
+                        <option value="Ringan">Ringan</option>
+                        <option value="Sedang">Sedang</option>
+                        <option value="Berat">Berat</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Keterangan Tambahan</label>
+                    <textarea name="keterangan" class="form-textarea" rows="3"></textarea>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary w-100">SIMPAN DATA</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Setup Layout
+            await checkAuth();
+            renderLayout('input');
+            document.getElementById('pageTitle').innerText = 'Input Pelanggaran';
+
+            // 2. Default Date
+            const now = new Date();
+            document.getElementById('fieldTanggal').value = now.toISOString().split('T')[0];
+
+            // 3. SEARCH LOGIC (Isolated & Robust)
+            const searchInput = document.getElementById('fieldSearch');
+            const dropdown = document.getElementById('dropdownResult');
+            let searchCache = []; // Cache lokal
+
+            searchInput.addEventListener('input', async function (e) {
+                const q = e.target.value.trim();
+
+                // Reset Validasi
+                document.getElementById('fieldNIS').value = '';
+                document.getElementById('fieldKelas').value = '';
+                document.getElementById('fieldAsrama').value = '';
+
+                if (q.length < 2) {
+                    dropdown.innerHTML = '';
+                    dropdown.classList.add('hidden');
+                    return;
+                }
+
+                // Call API directly for search (public/safe endpoint)
+                const res = await apiCall('santri.php?action=search&q=' + encodeURIComponent(q));
+                searchCache = res || [];
+
+                dropdown.innerHTML = '';
+
+                if (searchCache.length > 0) {
+                    searchCache.forEach((item, index) => {
+                        const div = document.createElement('div');
+                        div.className = 'search-item';
+                        div.innerHTML = `
+                            <span class="item-primary">${item.nama}</span>
+                            <span class="item-secondary">${item.nis} | ${item.kelas} | ${item.asrama}</span>
+                        `;
+
+                        // Click Handler (Safe Closure)
+                        div.addEventListener('click', () => {
+                            document.getElementById('fieldNIS').value = item.nis;
+                            document.getElementById('fieldSearch').value = item.nama;
+                            document.getElementById('fieldKelas').value = item.kelas;
+                            document.getElementById('fieldAsrama').value = item.asrama;
+
+                            dropdown.classList.add('hidden');
+                        });
+
+                        dropdown.appendChild(div);
+                    });
+                    dropdown.classList.remove('hidden');
+                } else {
+                    dropdown.innerHTML = '<div class="search-item" style="cursor:default">Tidak ditemukan</div>';
+                    dropdown.classList.remove('hidden');
+                }
+            });
+
+            // Close dropdown if clicked outside
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+
+            // 4. SUBMIT LOGIC
+            document.getElementById('formInput').addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                if (!document.getElementById('fieldNIS').value) {
+                    alert('Harap pilih nama santri dari hasil pencarian!');
+                    return;
+                }
+
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData);
+
+                if (confirm('Simpan data pelanggaran ini?')) {
+                    const res = await apiCall('pelanggaran.php?action=create', 'POST', data);
+                    if (res && res.status === 'success') {
+                        alert('✅ Berhasil disimpan!');
+                        window.location.href = 'riwayat.html';
+                    } else {
+                        alert('❌ Gagal: ' + (res ? res.message : 'Error'));
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

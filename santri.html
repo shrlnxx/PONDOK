@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Santri</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <style>
+        .clickable-name {
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .clickable-name:hover {
+            color: white;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .badge-success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="glass-panel">
+            <div class="flex justify-between"
+                style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                <h3><i class='bx bxs-user-detail'></i> Database Santri</h3>
+                <button onclick="document.getElementById('modalAdd').style.display = 'flex'" class="btn btn-primary"
+                    style="background:#22c55e">
+                    <i class='bx bx-plus'></i> Tambah Manual
+                </button>
+            </div>
+
+            <div
+                style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px; border: 1px dashed rgba(255,255,255,0.2); text-align: center; margin-bottom: 2rem;">
+                <h4><i class='bx bxs-cloud-upload'></i> Import Data Baru (Excel)</h4>
+                <p class="text-muted mb-3">Format: Kolom A (NIS), Kolom B (Nama), Kolom C (Kelas), Kolom D (Asrama)</p>
+                <input type="file" id="fileExcel" accept=".xlsx, .xls" style="display: none;"
+                    onchange="handleFile(this)">
+                <button onclick="document.getElementById('fileExcel').click()" class="btn btn-primary">📂 Pilih File
+                    Excel</button>
+                <div id="uploadStatus" class="mt-4 text-muted"></div>
+            </div>
+
+            <!-- Monitoring Table -->
+            <div class="mt-4">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                    <h4>Monitoring Data Santri</h4>
+                    <input type="text" id="searchMon" class="form-input" placeholder="Cari santri..."
+                        style="width:200px; padding:0.5rem;" onkeyup="loadTable(this.value)">
+                </div>
+                <div class="table-container" style="max-height: 500px; overflow-y: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>NIS</th>
+                                <th>Nama Santri (Klik Detail)</th>
+                                <th>Kelas</th>
+                                <th>Asrama</th>
+                            </tr>
+                        </thead>
+                        <tbody id="santriTableBody">
+                            <tr>
+                                <td colspan="4" class="text-center">Memuat data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Manual -->
+    <div id="modalAdd"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center;">
+        <div class="glass-panel" style="width: 100%; max-width: 450px; background:#1e293b; position:relative;">
+            <button onclick="document.getElementById('modalAdd').style.display='none'"
+                style="position:absolute; top:15px; right:15px; background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
+            <h3 class="mb-4">Tambah Santri Baru</h3>
+            <form id="formAdd">
+                <div class="form-group">
+                    <label class="form-label">NIS</label>
+                    <input type="text" name="nis" class="form-input" required placeholder="Contoh: 12345">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap</label>
+                    <input type="text" name="nama" class="form-input" required placeholder="Nama Lengkap">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Kelas</label>
+                    <input type="text" name="kelas" class="form-input" placeholder="Contoh: 1A">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Asrama</label>
+                    <input type="text" name="asrama" class="form-input" placeholder="Contoh: Rayon A">
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Simpan Data</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Raport Santri -->
+    <div id="modalRaport"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:2100; align-items:center; justify-content:center;">
+        <div class="glass-panel"
+            style="width: 100%; max-width: 600px; background:#1e293b; position:relative; max-height: 90vh; overflow-y: auto;">
+            <button onclick="document.getElementById('modalRaport').style.display='none'"
+                style="position:absolute; top:15px; right:15px; background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
+
+            <div
+                style="text-align: center; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
+                <div
+                    style="width: 60px; height: 60px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto; font-size: 2rem;">
+                    <i class='bx bxs-user'></i>
+                </div>
+                <h3 id="raportNama" style="margin-bottom: 5px;">Nama Santri</h3>
+                <p class="text-muted" id="raportInfo">NIS: - | Kelas: -</p>
+                <div style="margin-top: 10px;">
+                    <span class="badge badge-warning" id="totalPelanggaran">0 Pelanggaran</span>
+                </div>
+            </div>
+
+            <h4 class="mb-3"><i class='bx bxs-file-archive'></i> Riwayat Pelanggaran</h4>
+            <div class="table-container" style="border: none;">
+                <table style="font-size: 0.9em;">
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Pelanggaran</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="raportBody">
+                        <!-- Data will be injected here -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 text-center">
+                <button onclick="document.getElementById('modalRaport').style.display='none'"
+                    class="btn btn-outline">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            renderLayout('santri');
+            document.getElementById('pageTitle').innerText = 'Data Santri';
+            document.getElementById('pageSubtitle').innerText = 'Manajemen & Monitoring';
+            loadTable('');
+        });
+
+        // Load Table with Clickable Name
+        async function loadTable(query) {
+            let endpoint = 'santri.php?action=list';
+            if (query && query.trim().length > 0) {
+                endpoint = 'santri.php?action=search&q=' + encodeURIComponent(query);
+            }
+
+            const tbody = document.getElementById('santriTableBody');
+            if (!query) tbody.innerHTML = '<tr><td colspan="4" class="text-center">Memuat data santri...</td></tr>';
+
+            const res = await apiCall(endpoint);
+
+            if (res && res.length > 0) {
+                tbody.innerHTML = '';
+                res.forEach(row => {
+                    // Pass full row object to onclick
+                    const rowString = JSON.stringify(row).replace(/"/g, '&quot;');
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${row.nis}</td>
+                            <td>
+                                <span class="clickable-name" onclick="showRaport('${row.nis}', '${row.nama.replace(/'/g, "\\'")}', '${row.kelas}')">
+                                    <i class='bx bxs-id-card'></i> ${row.nama}
+                                </span>
+                            </td>
+                            <td>${row.kelas || '-'}</td>
+                            <td>${row.asrama || '-'}</td>
+                        </tr>
+                     `;
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center">Tidak ditemukan</td></tr>';
+            }
+        }
+
+        // SHOW RAPORT LOGIC
+        async function showRaport(nis, nama, kelas) {
+            // 1. Setup UI Modal Basics
+            document.getElementById('raportNama').innerText = nama;
+            document.getElementById('raportInfo').innerText = `NIS: ${nis} | Kelas: ${kelas || '-'}`;
+            document.getElementById('raportBody').innerHTML = '<tr><td colspan="3" class="text-center">Memuat riwayat...</td></tr>';
+            document.getElementById('modalRaport').style.display = 'flex';
+
+            // 2. Fetch History
+            const res = await apiCall(`pelanggaran.php?action=history_santri&nis=${nis}`);
+            const tbody = document.getElementById('raportBody');
+
+            if (res && res.length > 0) {
+                tbody.innerHTML = '';
+                document.getElementById('totalPelanggaran').innerText = `${res.length} Pelanggaran`;
+
+                res.forEach(row => {
+                    let statusClass = 'badge-warning';
+                    if (row.status_penanganan === 'Selesai') statusClass = 'badge-success';
+                    if (row.status_penanganan?.includes('Belum')) statusClass = 'badge-danger';
+
+                    const statusText = row.status_penanganan || 'Belum Ditangani';
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${row.tanggal_kejadian}</td>
+                            <td>
+                                <strong>${row.jenis_pelanggaran}</strong><br>
+                                <small class="text-muted">${row.kategori}</small>
+                            </td>
+                            <td><span class="badge ${statusClass}">${statusText}</span></td>
+                        </tr>
+                    `;
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center" style="padding: 20px;">🎉 Santri ini bersih! Belum ada catatan pelanggaran.</td></tr>';
+                document.getElementById('totalPelanggaran').innerText = '0 Pelanggaran';
+                document.getElementById('totalPelanggaran').className = 'badge badge-success'; // Hijau karena 0 pelanggaran
+            }
+        }
+
+        // Logic Tambah & Excel (Same as before)
+        document.getElementById('formAdd').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target));
+            const res = await apiCall('santri.php?action=create', 'POST', data);
+            if (res && res.status === 'success') {
+                alert('✅ ' + res.message);
+                document.getElementById('formAdd').reset();
+                document.getElementById('modalAdd').style.display = 'none';
+                loadTable(data.nama);
+            } else { alert('❌ Gagal: ' + (res ? res.message : 'Error')); }
+        });
+        function handleFile(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const status = document.getElementById('uploadStatus');
+            status.innerHTML = 'Membaca file...';
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+                uploadData(json);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        async function uploadData(jsonData) {
+            const status = document.getElementById('uploadStatus');
+            status.innerHTML = `Mengupload...`;
+            const res = await apiCall('santri.php?action=import', 'POST', { data: jsonData });
+            if (res && res.status === 'success') {
+                status.innerHTML = `✅ Sukses!`;
+                alert('Import Berhasil!');
+                loadTable('');
+            } else { status.innerHTML = `❌ Gagal`; }
+        }
+    </script>
+</body>
+
+</html>

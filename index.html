@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Petugas - PPS SHIROTHUL FUQOHA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand i {
+            font-size: 3rem;
+            color: #6366f1;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 15px;
+            border-radius: 50%;
+            margin-bottom: 5px;
+        }
+
+        .brand-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+
+        .brand-subtitle {
+            font-size: 1rem;
+            color: #94a3b8;
+            font-weight: 400;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <div class="brand">
+            <i class='bx bxs-shield-plus'></i>
+            <div>
+                <div class="brand-title">SIMPEL-PANEL</div>
+                <div class="brand-subtitle">Sistem Pelanggaran</div>
+                <div class="brand-subtitle">PPS SHIROTHUL FUQOHA'</div>
+            </div>
+        </div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-input" placeholder="Masukkan username" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-input" placeholder="Masukkan password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" style="margin-top: 1rem;">Masuk Sistem</button>
+        </form>
+    </div>
+
+    <!-- Inject Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = 'Memuat...'; btn.disabled = true;
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+
+            try {
+                const response = await fetch('api/auth.php?action=login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.status === 'success') {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert(result.message || 'Login gagal');
+                }
+            } catch (err) {
+                alert('Terjadi kesalahan koneksi');
+            } finally {
+                btn.innerText = originalText; btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

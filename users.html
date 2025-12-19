@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Petugas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-sm-danger {
+            padding: 4px 8px;
+            font-size: 0.8em;
+            color: #ef4444;
+            border: 1px solid #ef4444;
+            border-radius: 6px;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .btn-sm-danger:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .admin-only {
+            display: none !important;
+        }
+
+        /* Hidden by default */
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="glass-panel">
+            <div class="flex justify-between" style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h3><i class='bx bxs-group'></i> Tim Keamanan</h3>
+                    <p class="text-muted">Kelola akun petugas yang memiliki akses</p>
+                </div>
+                <button onclick="document.getElementById('modalAdd').style.display='flex'"
+                    class="btn btn-primary admin-only" id="btnAddUser">
+                    <i class='bx bx-user-plus'></i> Tambah Petugas
+                </button>
+            </div>
+
+            <div class="table-container mt-4">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Terdaftar Sejak</th>
+                            <th class="admin-only">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTable">
+                        <tr>
+                            <td colspan="4" class="text-center">Memuat data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah User -->
+    <div id="modalAdd"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center;">
+        <div class="glass-panel" style="width: 100%; max-width: 400px; background:#1e293b; position:relative;">
+            <button onclick="document.getElementById('modalAdd').style.display='none'"
+                style="position:absolute; top:15px; right:15px; background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
+            <h3 class="mb-4">Tambah Petugas Baru</h3>
+            <form id="formAdd">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-input" required placeholder="Username untuk login">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role Akses</label>
+                    <select name="role" class="form-select">
+                        <option value="security">Security (Petugas Biasa)</option>
+                        <option value="admin">Admin (Full Akses)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-input" required placeholder="Minimal 6 karakter">
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Buat Akun</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        let currentUserRole = 'security';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuthAndRole();
+            renderLayout('users');
+            document.getElementById('pageTitle').innerText = 'Manajemen Petugas';
+            document.getElementById('pageSubtitle').innerText = 'Atur akses sistem';
+            loadUsers();
+        });
+
+        // Special Check Auth that exposes Role
+        async function checkAuthAndRole() {
+            const res = await apiCall('auth.php?action=check');
+            if (res && res.status === 'authenticated') {
+                currentUserRole = res.role;
+                applyRoleUI();
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+
+        function applyRoleUI() {
+            if (currentUserRole === 'admin') {
+                // Show admin elements
+                document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('admin-only'));
+            }
+        }
+
+        async function loadUsers() {
+            const res = await apiCall('users.php?action=list');
+            const tbody = document.getElementById('userTable');
+
+            if (res && res.length > 0) {
+                tbody.innerHTML = '';
+                res.forEach(u => {
+                    let deleteBtn = '';
+                    if (currentUserRole === 'admin') {
+                        deleteBtn = `
+                            <td>
+                                <button onclick="deleteUser(${u.id}, '${u.username}')" class="btn-sm-danger">
+                                    <i class='bx bx-trash'></i> Hapus
+                                </button>
+                            </td>`;
+                    } else {
+                        deleteBtn = `<td class="text-muted"><small>No Access</small></td>`;
+                    }
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <div style="width:30px; height:30px; background:rgba(255,255,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center;"><i class='bx bxs-user'></i></div>
+                                    <strong>${u.username}</strong>
+                                </div>
+                            </td>
+                            <td><span class="badge" style="background:${u.role === 'admin' ? '#f59e0b' : 'rgba(255,255,255,0.1)'}">${u.role}</span></td>
+                            <td>${u.created_at || '-'}</td>
+                            ${deleteBtn}
+                        </tr>
+                    `;
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center">Belum ada user</td></tr>';
+            }
+        }
+
+        document.getElementById('formAdd').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target));
+
+            if (data.password.length < 6) { alert('Password minimal 6 karakter!'); return; }
+
+            const btn = e.target.querySelector('button');
+            const original = btn.innerText;
+            btn.innerText = 'Memproses...'; btn.disabled = true;
+
+            try {
+                const res = await apiCall('users.php?action=create', 'POST', data);
+                if (res && res.status === 'success') {
+                    alert('✅ Akun berhasil dibuat!');
+                    document.getElementById('modalAdd').style.display = 'none';
+                    document.getElementById('formAdd').reset();
+                    loadUsers();
+                } else {
+                    alert('❌ Gagal: ' + (res ? res.message : 'Error'));
+                }
+            } catch (err) {
+                alert('Connection Error');
+            } finally {
+                btn.innerText = original; btn.disabled = false;
+            }
+        });
+
+        async function deleteUser(id, name) {
+            if (!confirm(`Yakin ingin menghapus akun petugas "${name}"?\nStatus laporan mereka akan tetap tersimpan.`)) return;
+
+            const res = await apiCall('users.php?action=delete', 'POST', { id: id });
+            if (res && res.status === 'success') {
+                loadUsers();
+            } else {
+                alert('Gagal hapus: ' + (res.message || 'Error'));
+            }
+        }
+    </script>
+</body>
+
+</html>

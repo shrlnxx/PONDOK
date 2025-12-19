@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Pelanggaran</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="glass-panel">
+            <h3><i class='bx bxs-time-five'></i> Riwayat Pelanggaran</h3>
+            <div class="table-container mt-4">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Nama Santri</th>
+                            <th>Pelanggaran</th>
+                            <th>Kategori</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td colspan="6" class="text-center">Memuat data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="hidden"
+        style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; display:flex; align-items:center; justify-content:center;">
+        <div class="glass-panel"
+            style="width: 100%; max-width: 450px; background:#1e293b; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+            <h3 class="mb-4">Update Penanganan</h3>
+            <form id="updateForm">
+                <input type="hidden" name="id" id="editId">
+
+                <div class="form-group">
+                    <label class="form-label">Status Penanganan</label>
+                    <select name="status" id="editStatus" class="form-select">
+                        <option value="Proses">Sedang Diproses</option>
+                        <option value="Selesai">Selesai / Ditangani</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tindakan / Hukuman</label>
+                    <textarea name="tindakan" id="editTindakan" class="form-textarea" rows="3"
+                        placeholder="Contoh: Diberikan nasihat, Hukuman menyapu..." required></textarea>
+                </div>
+
+                <div class="flex justify-between" style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="button" onclick="closeModal()" class="btn btn-outline w-100">Batal</button>
+                    <button type="submit" class="btn btn-primary w-100">Simpan Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            renderLayout('riwayat');
+            document.getElementById('pageTitle').innerText = 'Data Riwayat';
+            document.getElementById('pageSubtitle').innerText = 'Pantau dan update status pelanggaran';
+            loadData();
+        });
+
+        // Load Data Logic
+        async function loadData() {
+            const res = await apiCall('pelanggaran.php?action=list');
+            const tbody = document.getElementById('tableBody');
+
+            if (res && res.data && res.data.length > 0) {
+                tbody.innerHTML = '';
+                res.data.forEach(row => {
+                    // Normalisasi status (jika null/kosong -> Belum Ditangani)
+                    const status = row.status_penanganan ? row.status_penanganan : 'Belum Ditangani';
+
+                    let statusColor = '#f59e0b'; // Warning (Proses)
+                    if (status.includes('Selesai')) statusColor = '#22c55e'; // Success
+                    if (status.includes('Belum')) statusColor = '#ef4444'; // Danger
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.tanggal_kejadian}</td>
+                        <td>
+                            <strong style="color:var(--primary)">${row.nama}</strong><br>
+                            <small class="text-muted">${row.kelas} • ${row.asrama}</small>
+                        </td>
+                        <td>${row.jenis_pelanggaran}</td>
+                        <td>
+                            <span style="padding: 4px 10px; border-radius: 6px; background: rgba(255,255,255,0.05); font-size: 0.85em;">${row.kategori}</span>
+                        </td>
+                        <td><span style="color: ${statusColor}; font-weight: 600;">${status}</span></td>
+                        <td>
+                            <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.85em;" onclick='openUpdate(${JSON.stringify(row)})'>
+                                <i class='bx bx-edit-alt'></i> Update
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="padding: 30px;">Belum ada data pelanggaran</td></tr>';
+            }
+        }
+
+        // Modal Logic
+        const modal = document.getElementById('editModal');
+
+        window.openUpdate = (row) => {
+            document.getElementById('editId').value = row.id;
+            document.getElementById('editStatus').value = row.status_penanganan === 'Belum Ditangani' ? 'Proses' : row.status_penanganan;
+            document.getElementById('editTindakan').value = row.tindakan_diambil || '';
+
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+        };
+
+        window.closeModal = () => {
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+        };
+
+        // Form Submit
+        document.getElementById('updateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = 'Menyimpan...';
+            btn.disabled = true;
+
+            // Convert FormData to Object manually to match API expectation
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+
+            console.log("Sending data:", data); // Debug log
+
+            try {
+                const res = await apiCall('pelanggaran.php?action=update_status', 'POST', data);
+
+                if (res && res.status === 'success') {
+                    alert('✅ Status berhasil diperbarui!');
+                    closeModal();
+                    loadData();
+                } else {
+                    alert('❌ Gagal: ' + (res ? res.message : 'Unknown error'));
+                }
+            } catch (err) {
+                alert('❌ Error Koneksi: ' + err.message);
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>
