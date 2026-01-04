@@ -1,0 +1,124 @@
+/* RESPONSIVE DESIGN */
+
+/* Desktop Default (overriding or supplementing style.css if necessary) */
+.mobile-menu-btn {
+    display: none;
+}
+
+.sidebar-close {
+    display: none;
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    /* Behind sidebar (999), above content */
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    /* Let clicks pass through when not active */
+}
+
+
+/* =========================================
+   TABLET & MOBILE (Max Width: 1024px)
+   ========================================= */
+@media (max-width: 1024px) {
+
+    /* Adjust grid for stats */
+    .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* =========================================
+   MOBILE (Max Width: 768px)
+   ========================================= */
+@media (max-width: 768px) {
+
+    /* 1. SIDEBAR AS DRAWER */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 280px;
+        max-width: 85%;
+        background: #0f172a;
+        z-index: 999;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 10px 0 25px rgba(0, 0, 0, 0.5);
+        display: flex !important;
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    /* 2. OVERLAY LOGIC */
+    .sidebar.active~.sidebar-overlay {
+        display: block;
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 15px;
+        padding-top: 10px;
+        /* Closer to top */
+        padding-bottom: 20px;
+    }
+
+    /* Force flex alignment for the header container if needed, via the button's parent */
+    /* Note: We can't target the inline style div directly easily, but we can tweak the button */
+    .mobile-menu-btn {
+        display: block;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 2.2rem;
+        /* Slightly larger */
+        cursor: pointer;
+        padding: 0;
+        /* Remove padding to fit corner */
+        margin-right: 12px;
+        line-height: 1;
+        /* Fix vertical height */
+    }
+
+    /* 4. CLOSE BUTTON */
+    .sidebar-close {
+        display: block;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 1001;
+        /* Above everything in sidebar */
+    }
+
+    /* 5. STATS GRID ON MOBILE */
+    .stat-grid {
+        grid-template-columns: 1fr;
+        /* Stack vertically on small screens */
+    }
+}

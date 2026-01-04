@@ -57,6 +57,29 @@ if ($action == 'create' && $method == 'POST') {
     }
 }
 
+// UPDATE SANTRI
+if ($action == 'update' && $method == 'POST') {
+    $input = json_decode(file_get_contents('php://input'), true) ?? $_POST;
+
+    $nis = trim($input['nis'] ?? '');
+    $nama = trim($input['nama'] ?? '');
+    $kelas = trim($input['kelas'] ?? '');
+    $asrama = trim($input['asrama'] ?? '');
+
+    if (empty($nis) || empty($nama)) {
+        send_json(['status' => 'error', 'message' => 'NIS dan Nama wajib diisi'], 400);
+    }
+
+    try {
+        $stmt = $pdo->prepare("UPDATE santri SET nama = ?, kelas = ?, asrama = ? WHERE nis = ?");
+        $stmt->execute([$nama, $kelas, $asrama, $nis]);
+
+        send_json(['status' => 'success', 'message' => 'Data santri berhasil diupdate']);
+    } catch (PDOException $e) {
+        send_json(['status' => 'error', 'message' => 'Gagal update: ' . $e->getMessage()], 500);
+    }
+}
+
 // IMPORT EXCEL
 if ($action == 'import' && $method == 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);

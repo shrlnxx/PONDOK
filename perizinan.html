@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Perizinan - SIMPEL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/responsive.css?v=4">
+    <style>
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 8px;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-btn.active {
+            color: white;
+            background: var(--primary);
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-AKTIF {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .status-SELESAI {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .status-TERLAMBAT {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Inject layout
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            renderLayout('perizinan'); // Will assume 'perizinan' menu active
+
+            // Rewrite Main Content with Tabs
+            const main = document.querySelector('.main-content');
+
+            // Custom Layout for Permissions Module
+            main.innerHTML = `
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <h2 style="margin-bottom:5px">Modul Perizinan</h2>
+                        <p class="text-muted">Kelola izin keluar masuk santri terintegrasi</p>
+                    </div>
+                    <div id="clock" class="glass-panel" style="padding: 0.5rem 1.5rem; font-family: monospace; font-size: 1.2rem; font-weight: bold;">--:--</div>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('dashboard')"><i class='bx bxs-dashboard'></i> Dashboard Izin</button>
+                    <button class="tab-btn" onclick="switchTab('input')"><i class='bx bxs-file-plus'></i> Input Izin</button>
+                    <button class="tab-btn" onclick="switchTab('data')"><i class='bx bxs-data'></i> Data Perizinan</button>
+                    <button class="tab-btn" onclick="switchTab('settings')"><i class='bx bxs-cog'></i> Pengaturan</button>
+                </div>
+
+                <!-- 1. DASHBOARD SECTION -->
+                <div id="sec-dashboard" class="section active">
+                    <div class="stat-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: rgba(99, 102, 241, 0.2); color: #6366f1;"><i class='bx bxs-calendar-check'></i></div>
+                            <div><h2 id="d-today">0</h2><span class="text-muted">Izin Hari Ini</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;"><i class='bx bxs-timer'></i></div>
+                            <div><h2 id="d-active">0</h2><span class="text-muted">Sedang Izin</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: rgba(239, 68, 68, 0.2); color: #ef4444;"><i class='bx bxs-alarm-exclamation'></i></div>
+                            <div><h2 id="d-late">0</h2><span class="text-muted">Terlambat</span></div>
+                        </div>
+                    </div>
+                    <div class="glass-panel mt-4">
+                        <h3 class="mb-3">Aktivitas Terbaru</h3>
+                        <div class="table-container">
+                            <table>
+                                <thead><tr><th>Waktu Keluar</th><th>Santri</th><th>Tujuan</th><th>Rencana Kembali</th><th>Status</th><th>Aksi</th></tr></thead>
+                                <tbody id="d-recent"><tr><td colspan="6" class="text-center">Memuat...</td></tr></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. INPUT SECTION -->
+                <div id="sec-input" class="section">
+                    <div class="glass-panel" style="max-width: 600px; margin: 0 auto;">
+                        <h3 class="mb-4">Formulir Izin Keluar</h3>
+                        <form id="formIzin">
+                            <div class="form-group">
+                                <label class="form-label">Nama Santri</label>
+                                <div style="position:relative">
+                                    <input type="text" id="cariSantri" class="form-input" placeholder="Ketik Nama / NIS..." autocomplete="off">
+                                    <div id="hasilCari" class="search-dropdown hidden"></div>
+                                </div>
+                                <input type="hidden" name="nis" id="nisSantri" required>
+                                <small id="infoSantri" class="text-muted" style="display:block; margin-top:5px; min-height:1.2em; color:var(--accent)!important; font-weight:bold;"></small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Tujuan Izin</label>
+                                <input type="text" name="tujuan" class="form-input" placeholder="Contoh: Berobat, Urusan Keluarga..." required>
+                            </div>
+
+                            <div class="flex" style="gap:1rem">
+                                <div class="form-group w-100">
+                                    <label class="form-label">Waktu Keluar</label>
+                                    <input type="datetime-local" name="waktu_keluar" id="inpKeluar" class="form-input" required>
+                                </div>
+                                <div class="form-group w-100">
+                                    <label class="form-label">Rencana Kembali</label>
+                                    <input type="datetime-local" name="rencana_kembali" id="inpKembali" class="form-input" required>
+                                </div>
+                            </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Keterangan Tambahan</label>
+                        <textarea name="keterangan" class="form-input" rows="2"></textarea>
+                    </div>
+
+                    <div id="submitStatus" style="margin-bottom:10px; font-weight:bold; color: var(--primary);"></div>
+
+                    <button type="submit" class="btn btn-primary w-100">Simpan & Cetak Surat</button>
+                </form>
+                    </div>
+                </div>
+
+                <!-- 3. DATA SECTION -->
+                <div id="sec-data" class="section">
+                    <div class="glass-panel">
+                        <div class="flex justify-between mb-4">
+                            <h3>Data Perizinan</h3>
+                            <div class="flex" style="gap:10px">
+                                <select id="filterStatus" class="form-select" style="width:150px">
+                                    <option value="">Semua Status</option>
+                                    <option value="AKTIF">Aktif</option>
+                                    <option value="SELESAI">Selesai</option>
+                                    <option value="TERLAMBAT">Terlambat</option>
+                                </select>
+                                <button onclick="loadList()" class="btn btn-primary">Refresh</button>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead><tr><th>Waktu Keluar</th><th>Santri</th><th>Tujuan</th><th>Rencana Kembali</th><th>Status</th><th>Aksi</th></tr></thead>
+                                <tbody id="listData"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. SETTINGS SECTION -->
+                <div id="sec-settings" class="section">
+                    <div class="glass-panel" style="max-width: 500px;">
+                        <h3 class="mb-4">Pengaturan Perizinan</h3>
+                        <form id="formSettings">
+                            <div class="form-group">
+                                <label class="form-label">Durasi Default (Jam)</label>
+                                <input type="number" name="default_duration_hours" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Toleransi Keterlambatan (Menit)</label>
+                                <input type="number" name="tolerance_minutes" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Batas Jam Malam (HH:MM)</label>
+                                <input type="time" name="max_night_hour" class="form-input">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Simpan Pengaturan</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+
+            // Initialize Clock
+            setInterval(() => {
+                document.getElementById('clock').innerText = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            }, 1000);
+
+            // Load Initial Dashboard
+            loadDashboard();
+            loadSettings(); // Prepare settings for input calculation
+
+            // Setup Search
+            setupSearch();
+
+            // Set default date times
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('inpKeluar').value = now.toISOString().slice(0, 16);
+
+            // Add default 3 hours
+            const later = new Date(now);
+            later.setHours(later.getHours() + 3);
+            document.getElementById('inpKembali').value = later.toISOString().slice(0, 16);
+        });
+
+        // TABS LOGIC
+        window.switchTab = (tab) => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+
+            // Find button by onclick attribute text usually, but simple index matching is safer or just querying
+            // Shortcuts:
+            const idx = ['dashboard', 'input', 'data', 'settings'].indexOf(tab);
+            document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+            document.getElementById(`sec-${tab}`).classList.add('active');
+
+            if (tab === 'dashboard') loadDashboard();
+            if (tab === 'data') loadList();
+            if (tab === 'settings') loadSettings();
+        };
+
+        // API CALLS
+        async function loadDashboard() {
+            const res = await apiCall('perizinan.php?action=stats');
+            if (res) {
+                document.getElementById('d-today').innerText = res.today;
+                document.getElementById('d-active').innerText = res.active;
+                document.getElementById('d-late').innerText = res.late;
+
+                const tbody = document.getElementById('d-recent');
+                tbody.innerHTML = '';
+                if (res.recent.length === 0) tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Belum ada aktivitas</td></tr>';
+                else {
+                    res.recent.forEach(r => {
+                        tbody.innerHTML += renderRow(r);
+                    });
+                }
+            }
+        }
+
+        async function loadList() {
+            const status = document.getElementById('filterStatus').value;
+            const res = await apiCall(`perizinan.php?action=list&status=${status}`);
+            const tbody = document.getElementById('listData');
+            tbody.innerHTML = '';
+            if (!res || res.length === 0) tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Data kosong</td></tr>';
+            else {
+                res.forEach(r => tbody.innerHTML += renderRow(r));
+            }
+        }
+
+        function renderRow(r) {
+            let label = r.status;
+            let badgeClass = `status-${r.status}`;
+
+            // Logic Display Custom
+            if (r.status === 'TERLAMBAT' && r.waktu_kembali) {
+                label = 'KEMBALI TERLAMBAT';
+                badgeClass = 'status-TERLAMBAT'; // Red
+            } else if (r.status === 'SELESAI') {
+                label = 'KEMBALI TEPAT WAKTU';
+            } else if (r.status === 'TERLAMBAT' && !r.waktu_kembali) {
+                label = 'BELUM KEMBALI (TELAT)';
+            }
+
+            const badge = `<span class="status-badge ${badgeClass}">${label}</span>`;
+            let btn = '';
+            // Allow returning if AKTIF or TERLAMBAT (and not yet returned)
+            // Update onclick to pass Plan Time
+            if (!r.waktu_kembali && (r.status === 'AKTIF' || r.status === 'TERLAMBAT')) {
+                btn = `<button onclick="doReturn(${r.id}, '${r.rencana_kembali}')" class="btn btn-sm btn-primary" title="Tandai Kembali"><i class='bx bx-check'></i></button>`;
+            }
+            const printBtn = `<button onclick="doPrint(${r.id})" class="btn btn-sm btn-outline" title="Cetak"><i class='bx bx-printer'></i></button>`;
+
+            return `
+                <tr>
+                    <td>${r.waktu_keluar}</td>
+                    <td><b>${r.nama}</b><br><small class="text-muted">${r.kelas}</small></td>
+                    <td>${r.tujuan_izin}</td>
+                    <td>${r.rencana_kembali}</td>
+                    <td>${badge}</td>
+                    <td><div class="flex" style="gap:5px">${btn}${printBtn}</div></td>
+                </tr>
+            `;
+        }
+
+        async function doReturn(id, planTime) {
+            // Intelligent Confirmation
+            const now = new Date(); // Current Client Time
+            // Fix planTime string (ISO format compatibility)
+            const plan = new Date(planTime.replace(' ', 'T'));
+
+            const diffMs = now - plan;
+            const diffMins = Math.floor(diffMs / 60000);
+            const tolerance = parseInt(APP_SETTINGS.tolerance_minutes || 15);
+
+            let msg = 'Santri sudah kembali?';
+
+            if (diffMins > 0) {
+                // Late
+                if (diffMins <= tolerance) {
+                    msg += `\n\n⚠️ INFO: Santri terlambat ${diffMins} menit.`;
+                    msg += `\n✅ Masih dalam toleransi (${tolerance} menit).`;
+                    msg += `\nStatus akan dicatat TEPAT WAKTU (SELESAI).`;
+                } else {
+                    msg += `\n\n⛔ PERINGATAN: Santri terlambat ${diffMins} menit!`;
+                    msg += `\n❌ Melewati batas toleransi (${tolerance} menit).`;
+                    msg += `\nStatus akan dicatat TERLAMBAT.`;
+                }
+            } else {
+                msg += `\n\n✅ Santri kembali tepat waktu (Sisa ${Math.abs(diffMins)} menit).`;
+            }
+
+            if (!confirm(msg)) return;
+
+            const res = await apiCall('perizinan.php?action=return', 'POST', { id });
+            if (res && res.status === 'success') {
+                if (res.late) {
+                    alert('Status tercatat: TERLAMBAT.');
+                }
+                loadDashboard();
+                loadList();
+            } else alert('Gagal update status: ' + (res?.message));
+        }
+
+        function doPrint(id) {
+            window.open(`print_izin.html?id=${id}`, '_blank', 'width=400,height=600');
+        }
+
+        // INPUT LOGIC
+        function setupSearch() {
+            const input = document.getElementById('cariSantri');
+            const box = document.getElementById('hasilCari');
+            let t;
+            input.addEventListener('keyup', () => {
+                clearTimeout(t);
+                t = setTimeout(async () => {
+                    const q = input.value;
+                    if (q.length < 2) { box.classList.add('hidden'); return; }
+                    const res = await apiCall(`santri.php?action=search&q=${q}`);
+                    box.innerHTML = '';
+                    if (res && res.length > 0) {
+                        box.classList.remove('hidden');
+                        res.forEach(s => {
+                            const d = document.createElement('div');
+                            d.className = 'search-item';
+                            d.innerHTML = `<div class="item-primary">${s.nama}</div><div class="item-secondary">${s.nis} - ${s.kelas}</div>`;
+                            d.onclick = () => {
+                                input.value = s.nama;
+                                document.getElementById('nisSantri').value = s.nis;
+                                document.getElementById('infoSantri').innerText = `Santri: ${s.nama} (${s.kelas})`;
+                                box.classList.add('hidden');
+                            };
+                            box.appendChild(d);
+                        });
+                    } else box.classList.add('hidden');
+                }, 300);
+            });
+        }
+
+        // DOCUMENT EVENT DELEGATION FOR FORM SUBMIT
+        document.addEventListener('submit', async (e) => {
+            if (e.target && e.target.id === 'formIzin') {
+                e.preventDefault();
+
+                const statusDiv = document.getElementById('submitStatus');
+                if (statusDiv) {
+                    statusDiv.innerText = 'Memproses...';
+                    statusDiv.style.color = '#6366f1';
+                }
+
+                // Validate NIS (Soft Validation - Log warning but try to send)
+                const nisVal = document.getElementById('nisSantri').value;
+                if (!nisVal) {
+                    if (!confirm('Santri belum dipilih dari list (NIS Kosong). Yakin ingin mencoba simpan? (Kemungkinan Gagal)')) {
+                        if (statusDiv) {
+                            statusDiv.innerText = 'Dibatalkan Pengguna (Pilih Santri Dulu)';
+                            statusDiv.style.color = 'orange';
+                        }
+                        return;
+                    }
+                }
+
+                // Disable button
+                const btn = e.target.querySelector('button');
+                const originalText = btn.innerText;
+                btn.innerText = 'Menyimpan...';
+                btn.disabled = true;
+
+                const form = new FormData(e.target);
+                const data = Object.fromEntries(form);
+
+                // PRE-PROCESS DATES
+                if (data.waktu_keluar) data.waktu_keluar = data.waktu_keluar.replace('T', ' ');
+                if (data.rencana_kembali) data.rencana_kembali = data.rencana_kembali.replace('T', ' ');
+
+                try {
+                    if (statusDiv) statusDiv.innerText = 'Mengirim data ke server...';
+
+                    const res = await apiCall('perizinan.php?action=create', 'POST', data);
+
+                    if (res && res.status === 'success') {
+                        if (statusDiv) {
+                            statusDiv.innerText = 'Sukses! Mencetak...';
+                            statusDiv.style.color = '#22c55e';
+                        }
+
+                        if (confirm('Izin Berhasil Dicatat! Cetak Struk sekarang?')) {
+                            doPrint(res.id);
+                        }
+
+                        e.target.reset();
+                        document.getElementById('nisSantri').value = '';
+                        document.getElementById('infoSantri').innerText = '';
+                        // Reset defaults
+                        const now = new Date();
+                        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                        document.getElementById('inpKeluar').value = now.toISOString().slice(0, 16);
+                        const later = new Date(now);
+                        later.setHours(later.getHours() + 3);
+                        document.getElementById('inpKembali').value = later.toISOString().slice(0, 16);
+
+                        setTimeout(() => { if (statusDiv) statusDiv.innerText = ''; }, 3000);
+                        switchTab('dashboard');
+                    } else {
+                        const msg = 'Gagal: ' + (res ? res.message : 'Unknown Error');
+                        if (statusDiv) {
+                            statusDiv.innerText = msg;
+                            statusDiv.style.color = '#ef4444';
+                        }
+                        alert(msg);
+                    }
+                } catch (error) {
+                    const msg = 'Error Sistem: ' + error.message;
+                    if (statusDiv) {
+                        statusDiv.innerText = msg;
+                        statusDiv.style.color = '#ef4444';
+                    }
+                    alert('Terjadi kesalahan sistem.');
+                    console.error(error);
+                } finally {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }
+            }
+        });
+
+        // GLOBAL SETTINGS
+        let APP_SETTINGS = {
+            tolerance_minutes: 15 // default
+        };
+
+        // SETTINGS LOGIC
+        async function loadSettings() {
+            const res = await apiCall('perizinan.php?action=settings');
+            if (res) {
+                APP_SETTINGS = res; // Store globally
+                // ... fill form ...
+                const form = document.getElementById('formSettings');
+                if (form) {
+                    if (res.default_duration_hours) form.default_duration_hours.value = res.default_duration_hours;
+                    if (res.tolerance_minutes) form.tolerance_minutes.value = res.tolerance_minutes;
+                    if (res.max_night_hour) form.max_night_hour.value = res.max_night_hour;
+                }
+            }
+        }
+
+        document.getElementById('formSettings').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = new FormData(e.target);
+            const data = Object.fromEntries(form);
+            const res = await apiCall('perizinan.php?action=settings', 'POST', data);
+            if (res && res.status === 'success') alert('Pengaturan Disimpan');
+        });
+
+    </script>
+</body>
+
+</html>

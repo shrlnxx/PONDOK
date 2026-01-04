@@ -280,3 +280,9 @@ tr:last-child td {
 .hidden {
     display: none !important;
 }
+
+/* DEFAULT HIDDEN MOBILE ELEMENTS */
+.sidebar-overlay,
+.sidebar-close {
+    display: none !important;
+}

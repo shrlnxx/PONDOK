@@ -49,6 +49,11 @@ function renderLayout(activePage) {
     app.innerHTML = `
         <div class="app-container">
             <nav class="sidebar">
+                <!-- Close Button For Mobile -->
+                <button class="sidebar-close no-print" onclick="document.querySelector('.sidebar').classList.remove('active')">
+                    <i class='bx bx-x'></i>
+                </button>
+
                 <!-- LOGO & JUDUL RESMI -->
                 <div class="brand" style="display:flex; flex-direction:column; align-items:flex-start; padding: 0 10px; height:auto; margin-bottom: 30px;">
                     <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">
@@ -79,23 +84,40 @@ function renderLayout(activePage) {
                     <a href="users.html" class="nav-link ${activePage === 'users' ? 'active' : ''}">
                         <i class='bx bxs-group'></i> Petugas
                     </a>
+                    
+                    <div style="margin: 10px 0; border-top: 1px solid rgba(255,255,255,0.1);"></div>
+                    <a href="perizinan.html" class="nav-link ${activePage === 'perizinan' ? 'active' : ''}">
+                        <i class='bx bxs-door-open'></i> Perizinan
+                    </a>
                 </div>
 
                 <a href="#" onclick="doLogout()" class="nav-link" style="color: #ef4444; margin-top: auto;">
                     <i class='bx bx-log-out'></i> Logout
                 </a>
             </nav>
+
+            <!-- Mobile Overlay -->
+            <div class="sidebar-overlay" onclick="document.querySelector('.sidebar').classList.remove('active')"></div>
+
             <main class="main-content">
                 <header class="flex justify-between mb-4" style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <h2 id="pageTitle" style="margin-bottom:5px">Halaman</h2>
-                        <p class="text-muted" id="pageSubtitle">Selamat datang kembali</p>
+                    <div style="display:flex; align-items:center; gap:1rem;">
+                        <!-- Mobile Burger -->
+                        <button class="mobile-menu-btn" onclick="document.querySelector('.sidebar').classList.add('active')">
+                            <i class='bx bx-menu'></i>
+                        </button>
+                        
+                        <div>
+                            <h2 id="pageTitle" style="margin-bottom:5px">Halaman</h2>
+                            <p class="text-muted" id="pageSubtitle">Selamat datang kembali</p>
+                        </div>
                     </div>
                 </header>
                 ${content}
             </main>
+
         </div>
-    `;
+        `;
 }
 
 // 4. Logout

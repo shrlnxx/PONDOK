@@ -7,6 +7,7 @@
     <title>Data Santri</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/responsive.css?v=4">
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <style>
         .clickable-name {
@@ -40,6 +41,11 @@
             background: rgba(245, 158, 11, 0.2);
             color: #f59e0b;
         }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
     </style>
 </head>
 
@@ -47,10 +53,9 @@
     <div id="app">
         <div class="glass-panel">
             <div class="flex justify-between"
-                style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                 <h3><i class='bx bxs-user-detail'></i> Database Santri</h3>
-                <button onclick="document.getElementById('modalAdd').style.display = 'flex'" class="btn btn-primary"
-                    style="background:#22c55e">
+                <button onclick="document.getElementById('modalAdd').style.display = 'flex'" class="btn btn-primary">
                     <i class='bx bx-plus'></i> Tambah Manual
                 </button>
             </div>
@@ -68,10 +73,11 @@
 
             <!-- Monitoring Table -->
             <div class="mt-4">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <div
+                    style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap: wrap; gap: 10px;">
                     <h4>Monitoring Data Santri</h4>
                     <input type="text" id="searchMon" class="form-input" placeholder="Cari santri..."
-                        style="width:200px; padding:0.5rem;" onkeyup="loadTable(this.value)">
+                        style="width:200px; max-width: 100%; padding:0.5rem;" onkeyup="loadTable(this.value)">
                 </div>
                 <div class="table-container" style="max-height: 500px; overflow-y: auto;">
                     <table>
@@ -81,11 +87,12 @@
                                 <th>Nama Santri (Klik Detail)</th>
                                 <th>Kelas</th>
                                 <th>Asrama</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="santriTableBody">
                             <tr>
-                                <td colspan="4" class="text-center">Memuat data...</td>
+                                <td colspan="5" class="text-center">Memuat data...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -103,7 +110,7 @@
             <h3 class="mb-4">Tambah Santri Baru</h3>
             <form id="formAdd">
                 <div class="form-group">
-                    <label class="form-label">NIS</label>
+                    <label class="form-label">NIS (Nomor Induk Santri)</label>
                     <input type="text" name="nis" class="form-input" required placeholder="Contoh: 12345">
                 </div>
                 <div class="form-group">
@@ -123,9 +130,39 @@
         </div>
     </div>
 
+    <!-- Modal Edit Santri -->
+    <div id="modalEdit"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center;">
+        <div class="glass-panel" style="width: 100%; max-width: 450px; background:#1e293b; position:relative;">
+            <button onclick="document.getElementById('modalEdit').style.display='none'"
+                style="position:absolute; top:15px; right:15px; background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
+            <h3 class="mb-4">Edit Data Santri</h3>
+            <form id="formEdit">
+                <div class="form-group">
+                    <label class="form-label">NIS (Tidak bisa diubah)</label>
+                    <input type="text" name="nis" id="editNis" class="form-input" readonly
+                        style="background: rgba(0,0,0,0.4);">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap</label>
+                    <input type="text" name="nama" id="editNama" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Kelas</label>
+                    <input type="text" name="kelas" id="editKelas" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Asrama</label>
+                    <input type="text" name="asrama" id="editAsrama" class="form-input">
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Update Data</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Modal Raport Santri -->
     <div id="modalRaport"
-        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:2100; align-items:center; justify-content:center;">
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:2100; align-items:center; justify-content:center; overflow-y: auto; padding: 20px;">
         <div class="glass-panel"
             style="width: 100%; max-width: 600px; background:#1e293b; position:relative; max-height: 90vh; overflow-y: auto;">
             <button onclick="document.getElementById('modalRaport').style.display='none'"
@@ -176,7 +213,7 @@
             loadTable('');
         });
 
-        // Load Table with Clickable Name
+        // Load Table with Clickable Name & Edit Button
         async function loadTable(query) {
             let endpoint = 'santri.php?action=list';
             if (query && query.trim().length > 0) {
@@ -184,16 +221,13 @@
             }
 
             const tbody = document.getElementById('santriTableBody');
-            if (!query) tbody.innerHTML = '<tr><td colspan="4" class="text-center">Memuat data santri...</td></tr>';
+            if (!query) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Memuat data santri...</td></tr>';
 
             const res = await apiCall(endpoint);
 
             if (res && res.length > 0) {
                 tbody.innerHTML = '';
                 res.forEach(row => {
-                    // Pass full row object to onclick
-                    const rowString = JSON.stringify(row).replace(/"/g, '&quot;');
-
                     tbody.innerHTML += `
                         <tr>
                             <td>${row.nis}</td>
@@ -204,23 +238,51 @@
                             </td>
                             <td>${row.kelas || '-'}</td>
                             <td>${row.asrama || '-'}</td>
+                            <td>
+                                <button onclick='editSantri(${JSON.stringify(row)})' class="btn btn-sm" style="background: linear-gradient(135deg, #3b82f6 0%, #2dd4bf 100%); color: white; font-weight: 600;">
+                                    <i class='bx bx-edit'></i> Edit
+                                </button>
+                            </td>
                         </tr>
                      `;
                 });
             } else {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center">Tidak ditemukan</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ditemukan</td></tr>';
             }
         }
 
+        // Edit Santri Function
+        function editSantri(data) {
+            document.getElementById('editNis').value = data.nis;
+            document.getElementById('editNama').value = data.nama;
+            document.getElementById('editKelas').value = data.kelas || '';
+            document.getElementById('editAsrama').value = data.asrama || '';
+            document.getElementById('modalEdit').style.display = 'flex';
+        }
+
+        // Submit Edit Form
+        document.getElementById('formEdit').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target));
+
+            const res = await apiCall('santri.php?action=update', 'POST', data);
+
+            if (res && res.status === 'success') {
+                alert('✅ ' + res.message);
+                document.getElementById('modalEdit').style.display = 'none';
+                loadTable('');
+            } else {
+                alert('❌ Gagal: ' + (res ? res.message : 'Error'));
+            }
+        });
+
         // SHOW RAPORT LOGIC
         async function showRaport(nis, nama, kelas) {
-            // 1. Setup UI Modal Basics
             document.getElementById('raportNama').innerText = nama;
             document.getElementById('raportInfo').innerText = `NIS: ${nis} | Kelas: ${kelas || '-'}`;
             document.getElementById('raportBody').innerHTML = '<tr><td colspan="3" class="text-center">Memuat riwayat...</td></tr>';
             document.getElementById('modalRaport').style.display = 'flex';
 
-            // 2. Fetch History
             const res = await apiCall(`pelanggaran.php?action=history_santri&nis=${nis}`);
             const tbody = document.getElementById('raportBody');
 
@@ -249,7 +311,7 @@
             } else {
                 tbody.innerHTML = '<tr><td colspan="3" class="text-center" style="padding: 20px;">🎉 Santri ini bersih! Belum ada catatan pelanggaran.</td></tr>';
                 document.getElementById('totalPelanggaran').innerText = '0 Pelanggaran';
-                document.getElementById('totalPelanggaran').className = 'badge badge-success'; // Hijau karena 0 pelanggaran
+                document.getElementById('totalPelanggaran').className = 'badge badge-success';
             }
         }
 
@@ -265,6 +327,7 @@
                 loadTable(data.nama);
             } else { alert('❌ Gagal: ' + (res ? res.message : 'Error')); }
         });
+
         function handleFile(input) {
             const file = input.files[0];
             if (!file) return;
@@ -279,6 +342,7 @@
             };
             reader.readAsArrayBuffer(file);
         }
+
         async function uploadData(jsonData) {
             const status = document.getElementById('uploadStatus');
             status.innerHTML = `Mengupload...`;
