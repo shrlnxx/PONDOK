@@ -96,8 +96,42 @@ try {
     $pdo->exec($sqlPerizinan);
     echo "<span style='color:green'>OK</span>\n";
 
-    // 9. Buat User Admin Default
-    echo "7. Membuat User Admin Default... ";
+    // 9. Buat Tabel Perizinan Settings
+    echo "7. Membuat tabel 'perizinan_settings'... ";
+    $sqlSettings = "CREATE TABLE IF NOT EXISTS perizinan_settings (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        setting_key VARCHAR(50) UNIQUE NOT NULL,
+        setting_value VARCHAR(255) NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+    $pdo->exec($sqlSettings);
+    echo "<span style='color:green'>OK</span>\n";
+
+    // 10. Insert Default Settings
+    echo "8. Menambahkan Default Settings... ";
+    $defaults = [
+        'default_duration_hours' => '3',
+        'tolerance_minutes' => '15',
+        'max_night_hour' => '17:00'
+    ];
+    foreach ($defaults as $k => $v) {
+        $stmt = $pdo->prepare("INSERT IGNORE INTO perizinan_settings (setting_key, setting_value) VALUES (?, ?)");
+        $stmt->execute([$k, $v]);
+    }
+    echo "<span style='color:green'>OK</span>\n";
+
+    // 11. Buat Tabel Perizinan Print Log
+    echo "9. Membuat tabel 'perizinan_print_log'... ";
+    $sqlPrintLog = "CREATE TABLE IF NOT EXISTS perizinan_print_log (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        perizinan_id INT NOT NULL,
+        printed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        printed_by INT NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+    $pdo->exec($sqlPrintLog);
+    echo "<span style='color:green'>OK</span>\n";
+
+    // 12. Buat User Admin Default
+    echo "10. Membuat User Admin Default... ";
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = 'admin'");
     $stmt->execute();
     if ($stmt->fetchColumn() == 0) {

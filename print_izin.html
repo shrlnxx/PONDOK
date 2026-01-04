@@ -230,8 +230,13 @@
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('content').classList.remove('hidden');
 
-                    const d = new Date(res.waktu_keluar);
-                    const k = new Date(res.rencana_kembali);
+                    // Parse dates from MySQL format (YYYY-MM-DD HH:MM:SS)
+                    // Replace space with 'T' for proper ISO format
+                    const waktuKeluarISO = res.waktu_keluar.replace(' ', 'T');
+                    const rencanaKembaliISO = res.rencana_kembali.replace(' ', 'T');
+
+                    const d = new Date(waktuKeluarISO);
+                    const k = new Date(rencanaKembaliISO);
 
                     // No. Izin
                     document.getElementById('p-no').innerText = String(id).padStart(4, '0');
