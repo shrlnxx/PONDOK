@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Keamanan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/responsive.css?v=4">
@@ -13,58 +14,76 @@
 <body>
     <div id="app">
         <!-- Stats Grid -->
-        <div class="stat-grid">
-            <div class="stat-card">
-                <div class="stat-icon"><i class='bx bxs-error-circle'></i></div>
-                <div>
-                    <h2 id="todayCount" style="margin:0; font-size:2rem;">0</h2>
-                    <span class="text-muted">Pelanggaran Hari Ini</span>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
+            <div
+                class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all">
+                <div class="flex items-center gap-4">
+                    <div class="bg-indigo-500/20 p-3 rounded-xl">
+                        <i class='bx bxs-error-circle text-3xl text-indigo-400'></i>
+                    </div>
+                    <div>
+                        <h2 id="todayCount" class="text-3xl font-bold text-white mb-1">0</h2>
+                        <span class="text-sm text-slate-400">Pelanggaran Hari Ini</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-icon" style="background: rgba(239, 68, 68, 0.2); color: #ef4444;"><i
-                        class='bx bxs-time'></i></div>
-                <div>
-                    <h2 id="prosesCount" style="margin:0; font-size:2rem;">0</h2>
-                    <span class="text-muted">Sedang Diproses</span>
+            <div
+                class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all">
+                <div class="flex items-center gap-4">
+                    <div class="bg-red-500/20 p-3 rounded-xl">
+                        <i class='bx bxs-time text-3xl text-red-400'></i>
+                    </div>
+                    <div>
+                        <h2 id="prosesCount" class="text-3xl font-bold text-white mb-1">0</h2>
+                        <span class="text-sm text-slate-400">Sedang Diproses</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-icon" style="background: rgba(34, 197, 94, 0.2); color: #22c55e;"><i
-                        class='bx bxs-check-circle'></i></div>
-                <div>
-                    <h2 id="selesaiCount" style="margin:0; font-size:2rem;">0</h2>
-                    <span class="text-muted">Selesai Ditangani</span>
+            <div
+                class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all">
+                <div class="flex items-center gap-4">
+                    <div class="bg-green-500/20 p-3 rounded-xl">
+                        <i class='bx bxs-check-circle text-3xl text-green-400'></i>
+                    </div>
+                    <div>
+                        <h2 id="selesaiCount" class="text-3xl font-bold text-white mb-1">0</h2>
+                        <span class="text-sm text-slate-400">Selesai Ditangani</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-icon" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;"><i
-                        class='bx bxs-file'></i></div>
-                <div>
-                    <h2 id="totalCount" style="margin:0; font-size:2rem;">0</h2>
-                    <span class="text-muted">Total Tercatat</span>
+            <div
+                class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all">
+                <div class="flex items-center gap-4">
+                    <div class="bg-amber-500/20 p-3 rounded-xl">
+                        <i class='bx bxs-file text-3xl text-amber-400'></i>
+                    </div>
+                    <div>
+                        <h2 id="totalCount" class="text-3xl font-bold text-white mb-1">0</h2>
+                        <span class="text-sm text-slate-400">Total Tercatat</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="glass-panel">
-            <h3 class="mb-3">Aktivitas Terakhir</h3>
-            <div class="table-container">
-                <table>
+        <!-- Recent Activity Table -->
+        <div class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
+            <h3 class="text-xl font-bold text-white mb-4">Aktivitas Terakhir</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full">
                     <thead>
-                        <tr>
-                            <th>Waktu</th>
-                            <th>Nama Santri</th>
-                            <th>Pelanggaran</th>
-                            <th>Status</th>
+                        <tr class="border-b border-white/10">
+                            <th class="text-left py-3 px-4 text-sm font-semibold text-slate-300">Waktu</th>
+                            <th class="text-left py-3 px-4 text-sm font-semibold text-slate-300">Nama Santri</th>
+                            <th class="text-left py-3 px-4 text-sm font-semibold text-slate-300">Pelanggaran</th>
+                            <th class="text-left py-3 px-4 text-sm font-semibold text-slate-300">Status</th>
                         </tr>
                     </thead>
-                    <tbody id="recentTable">
+                    <tbody id="recentTable" class="divide-y divide-white/5">
                         <tr>
-                            <td colspan="4" class="text-center">Memuat data...</td>
+                            <td colspan="4" class="text-center py-8 text-slate-400">Memuat data...</td>
                         </tr>
                     </tbody>
                 </table>

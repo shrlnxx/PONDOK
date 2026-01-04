@@ -123,7 +123,7 @@ if ($action == 'list') {
     $end = $_GET['end'] ?? '';
     $status = $_GET['status'] ?? '';
 
-    $sql = "SELECT p.*, s.nama, s.kelas, u.fullname as petugas 
+    $sql = "SELECT p.*, s.nama, s.kelas, s.asrama, u.fullname as petugas 
             FROM perizinan p 
             JOIN santri s ON p.santri_nis = s.nis
             LEFT JOIN users u ON p.petugas_keluar_id = u.id 
@@ -140,6 +140,20 @@ if ($action == 'list') {
     if ($status) {
         $sql .= " AND p.status = ?";
         $params[] = $status;
+    }
+
+    // New Filters: Name and Class
+    $nama = $_GET['nama'] ?? '';
+    $kelas = $_GET['kelas'] ?? '';
+
+    if ($nama) {
+        $sql .= " AND s.nama LIKE ?";
+        $params[] = "%$nama%";
+    }
+
+    if ($kelas) {
+        $sql .= " AND s.kelas LIKE ?";
+        $params[] = "%$kelas%";
     }
 
     $sql .= " ORDER BY p.waktu_keluar DESC LIMIT 200";

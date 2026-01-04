@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Riwayat Pelanggaran</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/responsive.css?v=4">
@@ -12,23 +13,25 @@
 
 <body>
     <div id="app">
-        <div class="glass-panel">
-            <h3><i class='bx bxs-time-five'></i> Riwayat Pelanggaran</h3>
-            <div class="table-container mt-4">
-                <table>
+        <div class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
+            <h3 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class='bx bxs-time-five'></i> Riwayat Pelanggaran
+            </h3>
+            <div class="overflow-x-auto mt-4">
+                <table class="w-full">
                     <thead>
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Nama Santri</th>
-                            <th>Pelanggaran</th>
-                            <th>Kategori</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
+                        <tr class="border-b border-white/10">
+                            <th class="text-left py-3 px-4 text-sm font-semibold text-slate-300">Tanggal</th>
+                            <th class="text-left py-3 px-4 text-sm font-semibold text-slate-300">Nama Santri</th>
+                            <th class="text-left py-3 px-4 text-sm font-semibold text-slate-300">Pelanggaran</th>
+                            <th class="text-left py-3 px-4 text-sm font-semibold text-slate-300">Kategori</th>
+                            <th class="text-left py-3 px-4 text-sm font-semibold text-slate-300">Status</th>
+                            <th class="text-left py-3 px-4 text-sm font-semibold text-slate-300">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody">
+                    <tbody id="tableBody" class="divide-y divide-white/5">
                         <tr>
-                            <td colspan="6" class="text-center">Memuat data...</td>
+                            <td colspan="6" class="text-center py-8 text-slate-400">Memuat data...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -37,31 +40,38 @@
     </div>
 
     <!-- Edit Modal -->
-    <div id="editModal" class="hidden"
-        style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; display:flex; align-items:center; justify-content:center;">
-        <div class="glass-panel"
-            style="width: 100%; max-width: 450px; background:#1e293b; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
-            <h3 class="mb-4">Update Penanganan</h3>
-            <form id="updateForm">
+    <div id="editModal"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[2000] flex items-center justify-center p-4">
+        <div class="bg-slate-800/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl w-full max-w-md p-6">
+            <h3 class="text-xl font-bold text-white mb-6">Update Penanganan</h3>
+            <form id="updateForm" class="space-y-4">
                 <input type="hidden" name="id" id="editId">
 
-                <div class="form-group">
-                    <label class="form-label">Status Penanganan</label>
-                    <select name="status" id="editStatus" class="form-select">
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Status Penanganan</label>
+                    <select name="status" id="editStatus"
+                        class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
                         <option value="Proses">Sedang Diproses</option>
                         <option value="Selesai">Selesai / Ditangani</option>
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Tindakan / Hukuman</label>
-                    <textarea name="tindakan" id="editTindakan" class="form-textarea" rows="3"
-                        placeholder="Contoh: Diberikan nasihat, Hukuman menyapu..." required></textarea>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Tindakan / Hukuman</label>
+                    <textarea name="tindakan" id="editTindakan"
+                        class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none transition-all"
+                        rows="3" placeholder="Contoh: Diberikan nasihat, Hukuman menyapu..." required></textarea>
                 </div>
 
-                <div class="flex justify-between" style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button type="button" onclick="closeModal()" class="btn btn-outline w-100">Batal</button>
-                    <button type="submit" class="btn btn-primary w-100">Simpan Update</button>
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="closeModal()"
+                        class="flex-1 px-6 py-3 border-2 border-slate-600 text-slate-300 hover:bg-slate-700/50 rounded-xl font-semibold transition-all">
+                        Batal
+                    </button>
+                    <button type="submit"
+                        class="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                        Simpan Update
+                    </button>
                 </div>
             </form>
         </div>

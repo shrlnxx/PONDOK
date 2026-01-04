@@ -5,9 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modul Perizinan - SIMPEL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/responsive.css?v=4">
     <style>
         .tabs {
             display: flex;
@@ -16,28 +15,34 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 10px;
             overflow-x: auto;
+            scrollbar-width: thin;
         }
 
         .tab-btn {
             background: none;
             border: none;
-            color: var(--text-muted);
-            padding: 0.5rem 1rem;
+            color: rgb(148, 163, 184);
+            padding: 0.75rem 1.5rem;
             cursor: pointer;
             font-weight: 600;
             font-size: 1rem;
-            border-radius: 8px;
+            border-radius: 0.75rem;
             white-space: nowrap;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .tab-btn:hover {
             color: white;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(99, 102, 241, 0.1);
         }
 
         .tab-btn.active {
             color: white;
-            background: var(--primary);
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
 
         .section {
@@ -52,7 +57,7 @@
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(5px);
+                transform: translateY(10px);
             }
 
             to {
@@ -62,8 +67,8 @@
         }
 
         .status-badge {
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 4px 12px;
+            border-radius: 6px;
             font-size: 0.85rem;
             font-weight: 600;
         }
@@ -95,17 +100,17 @@
             await checkAuth();
             renderLayout('perizinan'); // Will assume 'perizinan' menu active
 
-            // Rewrite Main Content with Tabs
-            const main = document.querySelector('.main-content');
+            // Rewrite Main Content with Tabs - use 'main' tag selector
+            const main = document.querySelector('main');
 
             // Custom Layout for Permissions Module
             main.innerHTML = `
-                <div class="flex justify-between mb-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                     <div>
-                        <h2 style="margin-bottom:5px">Modul Perizinan</h2>
-                        <p class="text-muted">Kelola izin keluar masuk santri terintegrasi</p>
+                        <h2 class="text-2xl font-bold text-white mb-1">Modul Perizinan</h2>
+                        <p class="text-slate-400">Kelola izin keluar masuk santri terintegrasi</p>
                     </div>
-                    <div id="clock" class="glass-panel" style="padding: 0.5rem 1.5rem; font-family: monospace; font-size: 1.2rem; font-weight: bold;">--:--</div>
+                    <div id="clock" class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-xl px-4 py-2 font-mono text-xl font-bold text-white">--:--</div>
                 </div>
 
                 <div class="tabs">
@@ -117,26 +122,58 @@
 
                 <!-- 1. DASHBOARD SECTION -->
                 <div id="sec-dashboard" class="section active">
-                    <div class="stat-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon" style="background: rgba(99, 102, 241, 0.2); color: #6366f1;"><i class='bx bxs-calendar-check'></i></div>
-                            <div><h2 id="d-today">0</h2><span class="text-muted">Izin Hari Ini</span></div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-indigo-500/20 p-3 rounded-xl">
+                                    <i class='bx bxs-calendar-check text-3xl text-indigo-400'></i>
+                                </div>
+                                <div>
+                                    <h2 id="d-today" class="text-3xl font-bold text-white">0</h2>
+                                    <span class="text-sm text-slate-400">Izin Hari Ini</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;"><i class='bx bxs-timer'></i></div>
-                            <div><h2 id="d-active">0</h2><span class="text-muted">Sedang Izin</span></div>
+                        <div class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-amber-500/20 p-3 rounded-xl">
+                                    <i class='bx bxs-timer text-3xl text-amber-400'></i>
+                                </div>
+                                <div>
+                                    <h2 id="d-active" class="text-3xl font-bold text-white">0</h2>
+                                    <span class="text-sm text-slate-400">Sedang Izin</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon" style="background: rgba(239, 68, 68, 0.2); color: #ef4444;"><i class='bx bxs-alarm-exclamation'></i></div>
-                            <div><h2 id="d-late">0</h2><span class="text-muted">Terlambat</span></div>
+                        <div class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-red-500/20 p-3 rounded-xl">
+                                    <i class='bx bxs-alarm-exclamation text-3xl text-red-400'></i>
+                                </div>
+                                <div>
+                                    <h2 id="d-late" class="text-3xl font-bold text-white">0</h2>
+                                    <span class="text-sm text-slate-400">Terlambat</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="glass-panel mt-4">
-                        <h3 class="mb-3">Aktivitas Terbaru</h3>
-                        <div class="table-container">
-                            <table>
-                                <thead><tr><th>Waktu Keluar</th><th>Santri</th><th>Tujuan</th><th>Rencana Kembali</th><th>Status</th><th>Aksi</th></tr></thead>
-                                <tbody id="d-recent"><tr><td colspan="6" class="text-center">Memuat...</td></tr></tbody>
+                    <div class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
+                        <h3 class="text-xl font-bold text-white mb-4">Aktivitas Terbaru</h3>
+                        <div class="overflow-hidden rounded-xl border border-white/5 bg-slate-900/30">
+                            <table class="w-full border-collapse">
+                                <thead>
+                                    <tr class="bg-indigo-900/50 backdrop-blur-sm border-b border-white/10">
+                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Waktu Keluar</th>
+                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Santri</th>
+                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Tujuan</th>
+                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Rencana Kembali</th>
+                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Status</th>
+                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="d-recent" class="divide-y divide-white/5">
+                                    <tr><td colspan="6" class="text-center py-8 text-slate-400">Memuat...</td></tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -144,66 +181,112 @@
 
                 <!-- 2. INPUT SECTION -->
                 <div id="sec-input" class="section">
-                    <div class="glass-panel" style="max-width: 600px; margin: 0 auto;">
-                        <h3 class="mb-4">Formulir Izin Keluar</h3>
-                        <form id="formIzin">
-                            <div class="form-group">
-                                <label class="form-label">Nama Santri</label>
-                                <div style="position:relative">
-                                    <input type="text" id="cariSantri" class="form-input" placeholder="Ketik Nama / NIS..." autocomplete="off">
+                    <div class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl max-w-2xl mx-auto">
+                        <h3 class="text-xl font-bold text-white mb-6">Formulir Izin Keluar</h3>
+                        <form id="formIzin" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-2">Nama Santri</label>
+                                <div class="relative">
+                                    <input type="text" id="cariSantri" class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="Ketik Nama / NIS..." autocomplete="off">
                                     <div id="hasilCari" class="search-dropdown hidden"></div>
                                 </div>
                                 <input type="hidden" name="nis" id="nisSantri" required>
-                                <small id="infoSantri" class="text-muted" style="display:block; margin-top:5px; min-height:1.2em; color:var(--accent)!important; font-weight:bold;"></small>
+                                <small id="infoSantri" class="block mt-2 text-sm text-indigo-400 font-bold min-h-[1.2em]"></small>
                             </div>
                             
-                            <div class="form-group">
-                                <label class="form-label">Tujuan Izin</label>
-                                <input type="text" name="tujuan" class="form-input" placeholder="Contoh: Berobat, Urusan Keluarga..." required>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-2">Tujuan Izin</label>
+                                <input type="text" name="tujuan" class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="Contoh: Berobat, Urusan Keluarga..." required>
                             </div>
 
-                            <div class="flex" style="gap:1rem">
-                                <div class="form-group w-100">
-                                    <label class="form-label">Waktu Keluar</label>
-                                    <input type="datetime-local" name="waktu_keluar" id="inpKeluar" class="form-input" required>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-300 mb-2">Waktu Keluar</label>
+                                    <input type="datetime-local" name="waktu_keluar" id="inpKeluar" class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" required>
                                 </div>
-                                <div class="form-group w-100">
-                                    <label class="form-label">Rencana Kembali</label>
-                                    <input type="datetime-local" name="rencana_kembali" id="inpKembali" class="form-input" required>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-300 mb-2">Rencana Kembali</label>
+                                    <input type="datetime-local" name="rencana_kembali" id="inpKembali" class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" required>
                                 </div>
                             </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Keterangan Tambahan</label>
-                        <textarea name="keterangan" class="form-input" rows="2"></textarea>
-                    </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-2">Keterangan Tambahan</label>
+                                <textarea name="keterangan" rows="2" class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"></textarea>
+                            </div>
 
-                    <div id="submitStatus" style="margin-bottom:10px; font-weight:bold; color: var(--primary);"></div>
+                            <div id="submitStatus" class="mb-3 font-bold text-indigo-400"></div>
 
-                    <button type="submit" class="btn btn-primary w-100">Simpan & Cetak Surat</button>
-                </form>
+                            <button type="submit" class="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                                Simpan & Cetak Surat
+                            </button>
+                        </form>
                     </div>
                 </div>
 
                 <!-- 3. DATA SECTION -->
                 <div id="sec-data" class="section">
-                    <div class="glass-panel">
-                        <div class="flex justify-between mb-4">
-                            <h3>Data Perizinan</h3>
-                            <div class="flex" style="gap:10px">
-                                <select id="filterStatus" class="form-select" style="width:150px">
-                                    <option value="">Semua Status</option>
-                                    <option value="AKTIF">Aktif</option>
-                                    <option value="SELESAI">Selesai</option>
-                                    <option value="TERLAMBAT">Terlambat</option>
-                                </select>
-                                <button onclick="loadList()" class="btn btn-primary">Refresh</button>
+                    <div class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
+                        <div class="mb-6">
+                            <h3 class="text-xl font-bold text-white mb-4">Data Perizinan</h3>
+                            
+                            <!-- ADVANCED FILTER -->
+                            <div class="bg-black/20 border border-white/5 rounded-xl p-4 mb-6">
+                                <small class="block text-slate-400 mb-3 font-medium uppercase tracking-wider">Filter Data:</small>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+                                    <div>
+                                        <label class="block text-xs text-slate-400 mb-1">Dari Tanggal</label>
+                                        <input type="date" id="startDate"
+                                            class="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-slate-400 mb-1">Sampai Tanggal</label>
+                                        <input type="date" id="endDate"
+                                            class="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-slate-400 mb-1">Status</label>
+                                        <select id="filterStatus" class="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+                                            <option value="">Semua Status</option>
+                                            <option value="AKTIF">Aktif</option>
+                                            <option value="SELESAI">Selesai</option>
+                                            <option value="TERLAMBAT">Terlambat</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-slate-400 mb-1">Nama Santri</label>
+                                        <input type="text" id="filterNama"
+                                            class="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                                            placeholder="Cari Nama...">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-slate-400 mb-1">Kelas</label>
+                                        <input type="text" id="filterKelas"
+                                            class="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                                            placeholder="Semua Kelas">
+                                    </div>
+                                    <div class="flex items-end">
+                                        <button onclick="loadList()"
+                                            class="w-full px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
+                                            <i class='bx bx-filter'></i> Tampilkan
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="table-container">
-                            <table>
-                                <thead><tr><th>Waktu Keluar</th><th>Santri</th><th>Tujuan</th><th>Rencana Kembali</th><th>Status</th><th>Aksi</th></tr></thead>
-                                <tbody id="listData"></tbody>
+                        <div class="overflow-hidden rounded-xl border border-white/5 bg-slate-900/30">
+                            <table class="w-full border-collapse">
+                                <thead>
+                                    <tr class="bg-indigo-900/50 backdrop-blur-sm border-b border-white/10">
+                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Waktu Keluar</th>
+                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Santri</th>
+                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Tujuan</th>
+                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Rencana Kembali</th>
+                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Status</th>
+                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="listData" class="divide-y divide-white/5"></tbody>
                             </table>
                         </div>
                     </div>
@@ -211,22 +294,22 @@
 
                 <!-- 4. SETTINGS SECTION -->
                 <div id="sec-settings" class="section">
-                    <div class="glass-panel" style="max-width: 500px;">
-                        <h3 class="mb-4">Pengaturan Perizinan</h3>
-                        <form id="formSettings">
-                            <div class="form-group">
-                                <label class="form-label">Durasi Default (Jam)</label>
-                                <input type="number" name="default_duration_hours" class="form-input" required>
+                    <div class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl max-w-lg">
+                        <h3 class="text-xl font-bold text-white mb-6">Pengaturan Perizinan</h3>
+                        <form id="formSettings" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-2">Durasi Default (Jam)</label>
+                                <input type="number" name="default_duration_hours" class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" required>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label">Toleransi Keterlambatan (Menit)</label>
-                                <input type="number" name="tolerance_minutes" class="form-input" required>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-2">Toleransi Keterlambatan (Menit)</label>
+                                <input type="number" name="tolerance_minutes" class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" required>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label">Batas Jam Malam (HH:MM)</label>
-                                <input type="time" name="max_night_hour" class="form-input">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-2">Batas Jam Malam (HH:MM)</label>
+                                <input type="time" name="max_night_hour" class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
                             </div>
-                            <button type="submit" class="btn btn-primary">Simpan Pengaturan</button>
+                            <button type="submit" class="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all">Simpan Pengaturan</button>
                         </form>
                     </div>
                 </div>
@@ -292,46 +375,110 @@
 
         async function loadList() {
             const status = document.getElementById('filterStatus').value;
-            const res = await apiCall(`perizinan.php?action=list&status=${status}`);
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const nama = document.getElementById('filterNama').value;
+            const kelas = document.getElementById('filterKelas').value;
+
+            let query = `perizinan.php?action=list&status=${status}`;
+            if (startDate) query += `&start=${startDate}`;
+            if (endDate) query += `&end=${endDate}`;
+            if (nama) query += `&nama=${encodeURIComponent(nama)}`;
+            if (kelas) query += `&kelas=${encodeURIComponent(kelas)}`;
+
+            const res = await apiCall(query);
             const tbody = document.getElementById('listData');
             tbody.innerHTML = '';
-            if (!res || res.length === 0) tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Data kosong</td></tr>';
-            else {
+
+            if (!res || res.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center py-12">
+                            <i class='bx bx-search-alt text-4xl text-slate-600 mb-2'></i>
+                            <p class="text-slate-400">Data tidak ditemukan</p>
+                        </td>
+                    </tr>`;
+            } else {
                 res.forEach(r => tbody.innerHTML += renderRow(r));
             }
         }
 
         function renderRow(r) {
             let label = r.status;
-            let badgeClass = `status-${r.status}`;
+            let badgeClass = '';
+            let rowClass = 'group hover:bg-white/5 transition-all duration-300 border-b border-indigo-500/5 last:border-0';
 
-            // Logic Display Custom
+            // Logic Display Custom with better badge colors
             if (r.status === 'TERLAMBAT' && r.waktu_kembali) {
                 label = 'KEMBALI TERLAMBAT';
-                badgeClass = 'status-TERLAMBAT'; // Red
+                badgeClass = 'bg-red-500/10 text-red-400 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]';
             } else if (r.status === 'SELESAI') {
-                label = 'KEMBALI TEPAT WAKTU';
+                label = 'TEPAT WAKTU';
+                badgeClass = 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]';
             } else if (r.status === 'TERLAMBAT' && !r.waktu_kembali) {
-                label = 'BELUM KEMBALI (TELAT)';
+                label = 'TELAT (BELUM KEMBALI)';
+                badgeClass = 'bg-rose-500/10 text-rose-400 border border-rose-500/20 shadow-[0_0_15px_rgba(244,63,94,0.1)] animate-pulse';
+            } else if (r.status === 'AKTIF') {
+                label = 'SEDANG IZIN';
+                badgeClass = 'bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)]';
             }
 
-            const badge = `<span class="status-badge ${badgeClass}">${label}</span>`;
+            const badge = `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold tracking-wide uppercase ${badgeClass}">
+                <i class='bx ${r.status === 'SELESAI' ? 'bx-check-circle' : r.status === 'AKTIF' ? 'bx-time-five' : 'bx-error-circle'} text-sm'></i>
+                ${label}
+            </span>`;
+
             let btn = '';
             // Allow returning if AKTIF or TERLAMBAT (and not yet returned)
-            // Update onclick to pass Plan Time
             if (!r.waktu_kembali && (r.status === 'AKTIF' || r.status === 'TERLAMBAT')) {
-                btn = `<button onclick="doReturn(${r.id}, '${r.rencana_kembali}')" class="btn btn-sm btn-primary" title="Tandai Kembali"><i class='bx bx-check'></i></button>`;
+                btn = `<button onclick="doReturn(${r.id}, '${r.rencana_kembali}')" 
+                    class="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold rounded-lg shadow-lg hover:shadow-emerald-500/30 transform hover:scale-105 transition-all duration-300 text-xs tracking-wide group-hover:opacity-100" 
+                    title="Tandai Kembali">
+                    <i class='bx bx-check-double text-lg'></i> KEMBALI
+                </button>`;
             }
-            const printBtn = `<button onclick="doPrint(${r.id})" class="btn btn-sm btn-outline" title="Cetak"><i class='bx bx-printer'></i></button>`;
+            const printBtn = `<button onclick="doPrint(${r.id})" 
+                class="inline-flex items-center gap-1.5 px-4 py-2 border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white rounded-lg font-semibold transition-all duration-300 text-xs backdrop-blur-sm" 
+                title="Cetak Surat">
+                <i class='bx bx-printer text-lg'></i>
+            </button>`;
 
             return `
-                <tr>
-                    <td>${r.waktu_keluar}</td>
-                    <td><b>${r.nama}</b><br><small class="text-muted">${r.kelas}</small></td>
-                    <td>${r.tujuan_izin}</td>
-                    <td>${r.rencana_kembali}</td>
-                    <td>${badge}</td>
-                    <td><div class="flex" style="gap:5px">${btn}${printBtn}</div></td>
+                <tr class="${rowClass}">
+                    <td class="py-5 px-6">
+                        <span class="font-mono text-indigo-300 text-sm tracking-wider">${r.waktu_keluar}</span>
+                    </td>
+                    <td class="py-5 px-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-slate-800 border border-indigo-500/30 flex items-center justify-center shadow-lg relative group-hover:scale-110 transition-transform duration-300">
+                                <i class='bx bxs-user text-indigo-400'></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-white text-base mb-1 tracking-wide">${r.nama}</div>
+                                <div class="flex gap-2">
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-500/10 text-blue-300 border border-blue-500/20 uppercase tracking-wider">
+                                        <i class='bx bxs-school mr-1'></i> ${r.kelas || '?'}
+                                    </span>
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-500/10 text-purple-300 border border-purple-500/20 uppercase tracking-wider">
+                                        <i class='bx bxs-building-house mr-1'></i> ${r.asrama || 'ASRAMA'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-5 px-6">
+                        <div class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+                            <span class="text-slate-300 text-sm font-medium">${r.tujuan_izin}</span>
+                        </div>
+                    </td>
+                    <td class="py-5 px-6">
+                        <span class="font-mono text-slate-400 text-sm tracking-wider">${r.rencana_kembali}</span>
+                    </td>
+                    <td class="py-5 px-6">${badge}</td>
+                    <td class="py-5 px-6">
+                        <div class="flex items-center gap-3">${btn}${printBtn}</div>
+                    </td>
                 </tr>
             `;
         }
@@ -395,8 +542,8 @@
                         box.classList.remove('hidden');
                         res.forEach(s => {
                             const d = document.createElement('div');
-                            d.className = 'search-item';
-                            d.innerHTML = `<div class="item-primary">${s.nama}</div><div class="item-secondary">${s.nis} - ${s.kelas}</div>`;
+                            d.className = 'search-dropdown-item';
+                            d.innerHTML = `<div class="text-white font-semibold">${s.nama}</div><div class="text-sm text-slate-400 font-mono">${s.nis} - ${s.kelas}</div>`;
                             d.onclick = () => {
                                 input.value = s.nama;
                                 document.getElementById('nisSantri').value = s.nis;

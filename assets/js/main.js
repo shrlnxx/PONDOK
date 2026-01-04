@@ -34,6 +34,15 @@ async function checkAuth() {
 
 // 3. Render Sidebar
 function renderLayout(activePage) {
+    // Inject Custom CSS
+    if (!document.getElementById('custom-css')) {
+        const link = document.createElement('link');
+        link.id = 'custom-css';
+        link.rel = 'stylesheet';
+        link.href = 'assets/css/tailwind-custom.css';
+        document.head.appendChild(link);
+    }
+
     // Inject Boxicons
     if (!document.getElementById('boxicons-css')) {
         const link = document.createElement('link');
@@ -47,76 +56,99 @@ function renderLayout(activePage) {
     const content = app.innerHTML;
 
     app.innerHTML = `
-        <div class="app-container">
-            <nav class="sidebar">
+        <div class="flex min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 bg-slate-800/70 backdrop-blur-xl border-r border-white/10 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-50 flex flex-col">
                 <!-- Close Button For Mobile -->
-                <button class="sidebar-close no-print" onclick="document.querySelector('.sidebar').classList.remove('active')">
+                <button class="lg:hidden absolute top-4 right-4 text-white text-2xl hover:text-indigo-400 transition-colors no-print" onclick="document.getElementById('sidebar').classList.remove('active')">
                     <i class='bx bx-x'></i>
                 </button>
 
-                <!-- LOGO & JUDUL RESMI -->
-                <div class="brand" style="display:flex; flex-direction:column; align-items:flex-start; padding: 0 10px; height:auto; margin-bottom: 30px;">
-                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">
-                        <i class='bx bxs-shield-plus' style="font-size: 2.5rem; color: var(--primary);"></i>
-                        <div style="line-height:1.2;">
-                            <div style="font-size:0.8rem; letter-spacing:1px; color:rgba(255,255,255,0.7);">SISTEM KEAMANAN</div>
-                            <div style="font-size:1.1rem; font-weight:800; color:white;">PPS SHIROTHUL<br>FUQOHA</div>
+                <!-- Logo & Brand -->
+                <div class="p-6 border-b border-white/10">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i class='bx bxs-shield-plus text-4xl text-indigo-400'></i>
+                        <div class="leading-tight">
+                            <div class="text-xs text-slate-400 uppercase tracking-wider">Sistem Keamanan</div>
+                            <div class="text-lg font-extrabold text-white">PPS SHIROTHUL<br>FUQOHA</div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="nav-links">
-                    <a href="dashboard.html" class="nav-link ${activePage === 'dashboard' ? 'active' : ''}">
-                        <i class='bx bxs-dashboard'></i> Dashboard
+                <!-- Navigation Links -->
+                <div class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+                    <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-indigo-500/20 hover:text-white transition-all ${activePage === 'dashboard' ? 'bg-indigo-500/30 text-white font-semibold' : ''}">
+                        <i class='bx bxs-dashboard text-xl'></i>
+                        <span>Dashboard</span>
                     </a>
-                    <a href="input.html" class="nav-link ${activePage === 'input' ? 'active' : ''}">
-                        <i class='bx bxs-edit'></i> Input Pelanggaran
+                    <a href="input.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-indigo-500/20 hover:text-white transition-all ${activePage === 'input' ? 'bg-indigo-500/30 text-white font-semibold' : ''}">
+                        <i class='bx bxs-edit text-xl'></i>
+                        <span>Input Pelanggaran</span>
                     </a>
-                    <a href="riwayat.html" class="nav-link ${activePage === 'riwayat' ? 'active' : ''}">
-                        <i class='bx bxs-time-five'></i> Riwayat
+                    <a href="riwayat.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-indigo-500/20 hover:text-white transition-all ${activePage === 'riwayat' ? 'bg-indigo-500/30 text-white font-semibold' : ''}">
+                        <i class='bx bxs-time-five text-xl'></i>
+                        <span>Riwayat</span>
                     </a>
-                    <a href="santri.html" class="nav-link ${activePage === 'santri' ? 'active' : ''}">
-                        <i class='bx bxs-user-detail'></i> Data Santri
+                    <a href="santri.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-indigo-500/20 hover:text-white transition-all ${activePage === 'santri' ? 'bg-indigo-500/30 text-white font-semibold' : ''}">
+                        <i class='bx bxs-user-detail text-xl'></i>
+                        <span>Data Santri</span>
                     </a>
-                    <a href="laporan.html" class="nav-link ${activePage === 'laporan' ? 'active' : ''}">
-                        <i class='bx bxs-report'></i> Laporan
+                    <a href="laporan.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-indigo-500/20 hover:text-white transition-all ${activePage === 'laporan' ? 'bg-indigo-500/30 text-white font-semibold' : ''}">
+                        <i class='bx bxs-report text-xl'></i>
+                        <span>Laporan</span>
                     </a>
-                    <a href="users.html" class="nav-link ${activePage === 'users' ? 'active' : ''}">
-                        <i class='bx bxs-group'></i> Petugas
+                    <a href="users.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-indigo-500/20 hover:text-white transition-all ${activePage === 'users' ? 'bg-indigo-500/30 text-white font-semibold' : ''}">
+                        <i class='bx bxs-group text-xl'></i>
+                        <span>Petugas</span>
                     </a>
                     
-                    <div style="margin: 10px 0; border-top: 1px solid rgba(255,255,255,0.1);"></div>
-                    <a href="perizinan.html" class="nav-link ${activePage === 'perizinan' ? 'active' : ''}">
-                        <i class='bx bxs-door-open'></i> Perizinan
+                    <div class="my-2 border-t border-white/10"></div>
+                    
+                    <a href="perizinan.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-indigo-500/20 hover:text-white transition-all ${activePage === 'perizinan' ? 'bg-indigo-500/30 text-white font-semibold' : ''}">
+                        <i class='bx bxs-door-open text-xl'></i>
+                        <span>Perizinan</span>
                     </a>
                 </div>
 
-                <a href="#" onclick="doLogout()" class="nav-link" style="color: #ef4444; margin-top: auto;">
-                    <i class='bx bx-log-out'></i> Logout
-                </a>
+                <!-- Logout Button -->
+                <div class="p-3 border-t border-white/10">
+                    <a href="#" onclick="doLogout()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/20 hover:text-red-300 transition-all">
+                        <i class='bx bx-log-out text-xl'></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
             </nav>
 
             <!-- Mobile Overlay -->
-            <div class="sidebar-overlay" onclick="document.querySelector('.sidebar').classList.remove('active')"></div>
+            <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden hidden" onclick="document.getElementById('sidebar').classList.remove('active'); this.classList.add('hidden')"></div>
 
-            <main class="main-content">
-                <header class="flex justify-between mb-4" style="display:flex; justify-content:space-between; align-items:center;">
-                    <div style="display:flex; align-items:center; gap:1rem;">
-                        <!-- Mobile Burger -->
-                        <button class="mobile-menu-btn" onclick="document.querySelector('.sidebar').classList.add('active')">
+            <!-- Main Content -->
+            <main class="flex-1 p-4 md:p-6 lg:p-8 overflow-x-hidden">
+                <!-- Header -->
+                <header class="flex items-center justify-between mb-6 md:mb-8">
+                    <div class="flex items-center gap-4">
+                        <!-- Mobile Menu Button -->
+                        <button class="lg:hidden text-white text-2xl hover:text-indigo-400 transition-colors" onclick="document.getElementById('sidebar').classList.add('active'); document.getElementById('sidebar-overlay').classList.remove('hidden')">
                             <i class='bx bx-menu'></i>
                         </button>
                         
                         <div>
-                            <h2 id="pageTitle" style="margin-bottom:5px">Halaman</h2>
-                            <p class="text-muted" id="pageSubtitle">Selamat datang kembali</p>
+                            <h2 id="pageTitle" class="text-2xl md:text-3xl font-bold text-white mb-1">Halaman</h2>
+                            <p id="pageSubtitle" class="text-sm md:text-base text-slate-400">Selamat datang kembali</p>
                         </div>
                     </div>
                 </header>
+
+                <!-- Page Content -->
                 ${content}
             </main>
-
         </div>
+
+        <style>
+            #sidebar.active {
+                transform: translateX(0);
+            }
+        </style>
         `;
 }
 

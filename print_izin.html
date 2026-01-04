@@ -3,6 +3,7 @@
 
 <head>
     <title>Cetak Surat Izin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             margin: 0;
@@ -11,30 +12,6 @@
             font-size: 12px;
             width: 58mm;
             color: black;
-        }
-
-        .center {
-            text-align: center;
-        }
-
-        .bold {
-            font-weight: bold;
-        }
-
-        .line {
-            border-bottom: 1px dashed black;
-            margin: 8px 0;
-        }
-
-        .row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 2px;
-        }
-
-        .title {
-            font-size: 14px;
-            text-transform: uppercase;
         }
 
         @media print {
@@ -53,33 +30,42 @@
     </style>
 </head>
 
-<body>
-    <div id="loading" class="center">Memuat Data...</div>
-    <div id="content" style="display:none">
-        <div class="center title bold">PPS SHIROTHUL FUQOHA</div>
-        <div class="center">Kartu Izin Keluar</div>
-        <div class="line"></div>
+<body class="bg-white">
+    <div id="loading" class="text-center py-4">Memuat Data...</div>
+    <div id="content" class="hidden">
+        <div class="text-center font-bold text-sm uppercase mb-2">PPS SHIROTHUL FUQOHA</div>
+        <div class="text-center text-xs mb-2">Kartu Izin Keluar</div>
+        <div class="border-b border-dashed border-black my-2"></div>
 
-        <div class="row"><span>Tgl:</span> <span id="p-date"></span></div>
-        <div class="row"><span>Jam:</span> <span id="p-time"></span></div>
-        <div class="row"><span>Oleh:</span> <span id="p-petugas"></span></div>
+        <div class="flex justify-between text-xs mb-1">
+            <span>Tgl:</span>
+            <span id="p-date"></span>
+        </div>
+        <div class="flex justify-between text-xs mb-1">
+            <span>Jam:</span>
+            <span id="p-time"></span>
+        </div>
+        <div class="flex justify-between text-xs mb-1">
+            <span>Oleh:</span>
+            <span id="p-petugas"></span>
+        </div>
 
-        <div class="line"></div>
+        <div class="border-b border-dashed border-black my-2"></div>
 
-        <div class="bold" id="p-nama" style="font-size:14px; margin-bottom:2px"></div>
-        <div id="p-detail"></div>
+        <div class="font-bold text-sm mb-1" id="p-nama"></div>
+        <div class="text-xs mb-2" id="p-detail"></div>
 
-        <div class="line"></div>
+        <div class="border-b border-dashed border-black my-2"></div>
 
-        <div class="bold">TUJUAN:</div>
-        <div id="p-tujuan" style="margin-bottom: 5px;"></div>
+        <div class="font-bold text-xs mb-1">TUJUAN:</div>
+        <div class="text-xs mb-2" id="p-tujuan"></div>
 
-        <div class="center line"></div>
-        <div class="center bold" style="font-size:11px">WAJIB KEMBALI SEBELUM:</div>
-        <div class="center bold" id="p-kembali" style="font-size:16px; margin: 5px 0;"></div>
-        <div class="center line"></div>
+        <div class="border-b border-dashed border-black my-2"></div>
+        <div class="text-center font-bold text-xs">WAJIB KEMBALI SEBELUM:</div>
+        <div class="text-center font-bold text-base my-2" id="p-kembali"></div>
+        <div class="border-b border-dashed border-black my-2"></div>
 
-        <div class="center" style="font-size:10px; margin-top:10px;">
+        <div class="text-center text-[10px] mt-3">
             Simpan struk ini.<br>Serahkan ke petugas saat kembali.
         </div>
     </div>
@@ -95,7 +81,7 @@
             apiCall(`perizinan.php?action=read&id=${id}`).then(res => {
                 if (res) {
                     document.getElementById('loading').style.display = 'none';
-                    document.getElementById('content').style.display = 'block';
+                    document.getElementById('content').classList.remove('hidden');
 
                     const d = new Date(res.waktu_keluar);
                     const k = new Date(res.rencana_kembali);
