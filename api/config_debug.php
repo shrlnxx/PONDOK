@@ -19,9 +19,9 @@ header('Access-Control-Allow-Headers: Content-Type');
 
 // DATABASE CONNECTION
 $host = 'localhost';
-$dbname = 'pelanggaran_db';
-$username = 'root';
-$password = '';
+$dbname = 'ponw6793_keamanan';
+$username = 'ponw6793_keamanan';
+$password = 'NgwIvUQIbK$C5mYA';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);

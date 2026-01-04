@@ -8,9 +8,9 @@ ini_set('display_errors', 1);
 
 // 1. Konfigurasi Database (Sesuaikan dengan Laragon/cPanel)
 $host = 'localhost';
-$user = 'root';     // Default Laragon: root
-$pass = '';         // Default Laragon: kosong
-$dbname = 'pelanggaran_db';
+$user = 'ponw6793_keamanan';     // Production: ponw6793_keamanan
+$pass = 'NgwIvUQIbK$C5mYA';      // Production password
+$dbname = 'ponw6793_keamanan';
 
 echo "<h1>Setup Database Otomatis</h1>";
 echo "<pre style='background:#f4f4f4; padding:15px; border:1px solid #ddd; border-radius:5px;'>";
@@ -63,6 +63,7 @@ try {
         jenis_pelanggaran VARCHAR(255) NOT NULL,
         kategori VARCHAR(50) DEFAULT 'Ringan',
         keterangan TEXT,
+        foto_bukti VARCHAR(255) NULL,
         pencatat_id INT,
         penangan_id INT,
         status_penanganan VARCHAR(50) DEFAULT 'Baru', 
@@ -76,8 +77,27 @@ try {
     $pdo->exec($sqlPelanggaran);
     echo "<span style='color:green'>OK</span>\n";
 
-    // 8. Buat User Admin Default
-    echo "6. Membuat User Admin Default... ";
+    // 8. Buat Tabel Perizinan
+    echo "6. Membuat tabel 'perizinan'... ";
+    $sqlPerizinan = "CREATE TABLE IF NOT EXISTS perizinan (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        santri_nis VARCHAR(20) NOT NULL,
+        waktu_keluar DATETIME NOT NULL,
+        tujuan_izin VARCHAR(255) NOT NULL,
+        rencana_kembali DATETIME NOT NULL,
+        waktu_kembali DATETIME NULL,
+        status VARCHAR(50) DEFAULT 'Keluar',
+        keterangan TEXT,
+        petugas_keluar_id INT,
+        petugas_kembali_id INT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP
+    )";
+    $pdo->exec($sqlPerizinan);
+    echo "<span style='color:green'>OK</span>\n";
+
+    // 9. Buat User Admin Default
+    echo "7. Membuat User Admin Default... ";
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = 'admin'");
     $stmt->execute();
     if ($stmt->fetchColumn() == 0) {
