@@ -77,6 +77,41 @@
                         rows="3"></textarea>
                 </div>
 
+                <!-- UPLOAD FOTO BUKTI (OPSIONAL) -->
+                <div class="border border-dashed border-slate-600 rounded-xl p-4 bg-slate-900/30">
+                    <div class="flex items-start gap-3 mb-3">
+                        <i class='bx bx-image-add text-2xl text-indigo-400'></i>
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium text-slate-300 mb-1">
+                                Upload Foto Bukti <span class="text-xs text-slate-500">(Opsional)</span>
+                            </label>
+                            <p class="text-xs text-slate-400 mb-2">Format: JPG, PNG, JPEG. Maks 2MB</p>
+                        </div>
+                    </div>
+
+                    <input type="file" id="fieldFotoBukti" name="foto_bukti" accept="image/jpeg,image/png,image/jpg"
+                        class="hidden">
+
+                    <!-- Upload Button -->
+                    <button type="button" onclick="document.getElementById('fieldFotoBukti').click()"
+                        class="w-full px-4 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-white font-medium transition-all flex items-center justify-center gap-2">
+                        <i class='bx bx-upload'></i> Pilih Foto
+                    </button>
+
+                    <!-- Preview Area -->
+                    <div id="photoPreview" class="hidden mt-4">
+                        <div class="relative">
+                            <img id="previewImage" src="" alt="Preview"
+                                class="w-full h-48 object-cover rounded-lg border border-slate-600">
+                            <button type="button" onclick="clearPhoto()"
+                                class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 shadow-lg transition-all">
+                                <i class='bx bx-x text-xl'></i>
+                            </button>
+                            <div class="mt-2 text-xs text-slate-400" id="photoInfo"></div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="pt-4">
                     <button type="submit"
                         class="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200">
@@ -159,7 +194,55 @@
                 }
             });
 
-            // 4. SUBMIT LOGIC
+            // 3.5. PHOTO UPLOAD HANDLING
+            const photoInput = document.getElementById('fieldFotoBukti');
+            const photoPreview = document.getElementById('photoPreview');
+            const previewImage = document.getElementById('previewImage');
+            const photoInfo = document.getElementById('photoInfo');
+
+            photoInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+
+                if (!file) return;
+
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                if (!validTypes.includes(file.type)) {
+                    alert('❌ Format file tidak valid! Gunakan JPG, PNG, atau JPEG.');
+                    photoInput.value = '';
+                    return;
+                }
+
+                // Validate file size (max 2MB)
+                const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+                if (file.size > maxSize) {
+                    alert('❌ Ukuran file terlalu besar! Maksimal 2MB.');
+                    photoInput.value = '';
+                    return;
+                }
+
+                // Display preview
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    previewImage.src = event.target.result;
+                    photoPreview.classList.remove('hidden');
+
+                    // Show file info
+                    const sizeKB = (file.size / 1024).toFixed(2);
+                    photoInfo.innerHTML = `📁 ${file.name} (${sizeKB} KB)`;
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // Clear photo function
+            window.clearPhoto = function () {
+                photoInput.value = '';
+                previewImage.src = '';
+                photoPreview.classList.add('hidden');
+                photoInfo.innerHTML = '';
+            };
+
+            // 4. SUBMIT LOGIC (Updated for File Upload)
             document.getElementById('formInput').addEventListener('submit', async (e) => {
                 e.preventDefault();
 
@@ -169,15 +252,37 @@
                 }
 
                 const formData = new FormData(e.target);
-                const data = Object.fromEntries(formData);
+
+                // Debug: log what we're sending
+                console.log('📤 Submitting data:');
+                for (let pair of formData.entries()) {
+                    console.log(pair[0], pair[1]);
+                }
 
                 if (confirm('Simpan data pelanggaran ini?')) {
-                    const res = await apiCall('pelanggaran.php?action=create', 'POST', data);
-                    if (res && res.status === 'success') {
-                        alert('✅ Berhasil disimpan!');
-                        window.location.href = 'riwayat.html';
-                    } else {
-                        alert('❌ Gagal: ' + (res ? res.message : 'Error'));
+                    try {
+                        // Send FormData directly (not JSON) for file upload
+                        const response = await fetch('api/pelanggaran.php?action=create', {
+                            method: 'POST',
+                            body: formData // Don't set Content-Type header, browser will auto-set with boundary
+                        });
+
+                        const res = await response.json();
+                        console.log('📥 Response:', res);
+
+                        if (res && res.status === 'success') {
+                            let msg = '✅ Berhasil disimpan!';
+                            if (res.foto_uploaded) {
+                                msg += '\n📸 Foto bukti berhasil diupload!';
+                            }
+                            alert(msg);
+                            window.location.href = 'riwayat.html';
+                        } else {
+                            alert('❌ Gagal: ' + (res ? res.message : 'Error'));
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('❌ Terjadi kesalahan saat mengirim data');
                     }
                 }
             });

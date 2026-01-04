@@ -1,11 +1,11 @@
 <?php
-require_once 'config.php';
+// TEMPORARY: Use debug config to see errors
+require_once 'config_debug.php';
 
-// ENABLE DEBUGGING LOG
-function log_debug($msg)
-{
-    file_put_contents('debug_log.txt', date('[Y-m-d H:i:s] ') . $msg . PHP_EOL, FILE_APPEND);
-}
+// Wrap everything in try-catch to catch ALL errors
+try {
+
+// log_debug() function already defined in config_debug.php - no need to redeclare
 
 // Auth Check
 if (!isset($_SESSION['user_id'])) {
@@ -253,3 +253,15 @@ if ($action == 'read') {
         send_json(['status' => 'error', 'message' => 'Not Found'], 404);
     }
 }
+
+// Catch ALL errors and return as JSON
+} catch (Throwable $e) {
+    log_debug("FATAL ERROR: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine());
+    send_json([
+        'status' => 'error',
+        'message' => 'Server Error: ' . $e->getMessage(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine()
+    ], 500);
+}
+?>

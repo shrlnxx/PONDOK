@@ -5,68 +5,215 @@
     <title>Cetak Surat Izin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            padding: 5px;
+            padding: 8px;
             font-family: 'Courier New', monospace;
-            font-size: 12px;
+            font-size: 11px;
             width: 58mm;
-            color: black;
+            color: #000;
+            background: white;
+            line-height: 1.3;
         }
 
         @media print {
             @page {
                 margin: 0;
+                size: 58mm auto;
             }
 
             body {
-                margin: 5px;
+                margin: 0;
+                padding: 8px;
             }
 
             .no-print {
                 display: none;
             }
         }
+
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #000;
+        }
+
+        .header .title {
+            font-weight: bold;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
+
+        .header .subtitle {
+            font-size: 10px;
+            margin-bottom: 2px;
+        }
+
+        .divider {
+            border-top: 1px dashed #000;
+            margin: 8px 0;
+        }
+
+        .divider-solid {
+            border-top: 1px solid #000;
+            margin: 8px 0;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            font-size: 10px;
+        }
+
+        .info-row .label {
+            font-weight: normal;
+        }
+
+        .info-row .value {
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .section-title {
+            font-weight: bold;
+            font-size: 10px;
+            margin: 8px 0 4px 0;
+            text-transform: uppercase;
+        }
+
+        .highlight-box {
+            border: 2px solid #000;
+            padding: 8px;
+            text-align: center;
+            margin: 10px 0;
+            background: #f5f5f5;
+        }
+
+        .highlight-box .label {
+            font-size: 9px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .highlight-box .time {
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .santri-info {
+            margin: 8px 0;
+            padding: 6px;
+            background: #f9f9f9;
+            border-left: 3px solid #000;
+        }
+
+        .santri-info .name {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+
+        .santri-info .detail {
+            font-size: 10px;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 9px;
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px dashed #000;
+            line-height: 1.4;
+        }
+
+        .qr-placeholder {
+            width: 60px;
+            height: 60px;
+            margin: 10px auto;
+            border: 2px dashed #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+        }
     </style>
 </head>
 
 <body class="bg-white">
-    <div id="loading" class="text-center py-4">Memuat Data...</div>
+    <div id="loading" class="text-center py-4">Memuat...</div>
     <div id="content" class="hidden">
-        <div class="text-center font-bold text-sm uppercase mb-2">PPS SHIROTHUL FUQOHA</div>
-        <div class="text-center text-xs mb-2">Kartu Izin Keluar</div>
-        <div class="border-b border-dashed border-black my-2"></div>
-
-        <div class="flex justify-between text-xs mb-1">
-            <span>Tgl:</span>
-            <span id="p-date"></span>
-        </div>
-        <div class="flex justify-between text-xs mb-1">
-            <span>Jam:</span>
-            <span id="p-time"></span>
-        </div>
-        <div class="flex justify-between text-xs mb-1">
-            <span>Oleh:</span>
-            <span id="p-petugas"></span>
+        <!-- HEADER -->
+        <div class="header">
+            <div class="title">PPS SHIROTHUL FUQOHA</div>
+            <div class="subtitle">SURAT IZIN KELUAR</div>
         </div>
 
-        <div class="border-b border-dashed border-black my-2"></div>
+        <!-- METADATA -->
+        <div class="info-row">
+            <span class="label">No. Izin</span>
+            <span class="value" id="p-no"></span>
+        </div>
+        <div class="info-row">
+            <span class="label">Tanggal</span>
+            <span class="value" id="p-date"></span>
+        </div>
+        <div class="info-row">
+            <span class="label">Jam</span>
+            <span class="value" id="p-time"></span>
+        </div>
+        <div class="info-row">
+            <span class="label">Petugas</span>
+            <span class="value" id="p-petugas"></span>
+        </div>
 
-        <div class="font-bold text-sm mb-1" id="p-nama"></div>
-        <div class="text-xs mb-2" id="p-detail"></div>
+        <div class="divider-solid"></div>
 
-        <div class="border-b border-dashed border-black my-2"></div>
+        <!-- SANTRI INFO -->
+        <div class="santri-info">
+            <div class="name" id="p-nama"></div>
+            <div class="detail" id="p-kelas"></div>
+            <div class="detail" id="p-asrama"></div>
+        </div>
 
-        <div class="font-bold text-xs mb-1">TUJUAN:</div>
-        <div class="text-xs mb-2" id="p-tujuan"></div>
+        <!-- TUJUAN -->
+        <div class="section-title">TUJUAN:</div>
+        <div style="padding-left: 4px; margin-bottom: 8px;" id="p-tujuan"></div>
 
-        <div class="border-b border-dashed border-black my-2"></div>
-        <div class="text-center font-bold text-xs">WAJIB KEMBALI SEBELUM:</div>
-        <div class="text-center font-bold text-base my-2" id="p-kembali"></div>
-        <div class="border-b border-dashed border-black my-2"></div>
+        <div class="divider"></div>
 
-        <div class="text-center text-[10px] mt-3">
-            Simpan struk ini.<br>Serahkan ke petugas saat kembali.
+        <!-- KETERANGAN -->
+        <div id="keterangan-section" class="hidden">
+            <div class="section-title">KETERANGAN:</div>
+            <div style="padding-left: 4px; margin-bottom: 8px; font-size: 9px;" id="p-ket"></div>
+            <div class="divider"></div>
+        </div>
+
+        <!-- HIGHLIGHT: WAKTU KEMBALI -->
+        <div class="highlight-box">
+            <div class="label">WAJIB KEMBALI</div>
+            <div class="time" id="p-kembali"></div>
+        </div>
+
+        <!-- QR CODE PLACEHOLDER (Optional) -->
+        <!-- <div class="qr-placeholder">
+            [QR CODE]
+        </div> -->
+
+        <!-- FOOTER NOTE -->
+        <div class="footer-note">
+            Simpan struk ini dengan baik.<br>
+            Serahkan ke petugas saat kembali.<br>
+            Terlambat = Sanksi
         </div>
     </div>
 
@@ -86,16 +233,47 @@
                     const d = new Date(res.waktu_keluar);
                     const k = new Date(res.rencana_kembali);
 
-                    document.getElementById('p-date').innerText = d.toLocaleDateString('id-ID');
-                    document.getElementById('p-time').innerText = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                    document.getElementById('p-petugas').innerText = (res.petugas_nama || 'Admin').split(' ')[0]; // First name only
+                    // No. Izin
+                    document.getElementById('p-no').innerText = String(id).padStart(4, '0');
 
-                    document.getElementById('p-nama').innerText = res.nama;
-                    document.getElementById('p-detail').innerText = `${res.kelas} - ${res.asrama}`;
+                    // Date & Time
+                    document.getElementById('p-date').innerText = d.toLocaleDateString('id-ID', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    });
+                    document.getElementById('p-time').innerText = d.toLocaleTimeString('id-ID', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    // Petugas
+                    const petugasName = res.petugas_nama || 'Admin';
+                    document.getElementById('p-petugas').innerText = petugasName.split(' ')[0]; // First name only
+
+                    // Santri Info
+                    document.getElementById('p-nama').innerText = res.nama.toUpperCase();
+                    document.getElementById('p-kelas').innerText = res.kelas;
+                    document.getElementById('p-asrama').innerText = res.asrama;
+
+                    // Tujuan
                     document.getElementById('p-tujuan').innerText = res.tujuan_izin;
 
-                    document.getElementById('p-kembali').innerText = k.toLocaleString('id-ID', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    // Keterangan (jika ada)
+                    if (res.keterangan) {
+                        document.getElementById('keterangan-section').classList.remove('hidden');
+                        document.getElementById('p-ket').innerText = res.keterangan;
+                    }
 
+                    // Waktu Kembali
+                    document.getElementById('p-kembali').innerText = k.toLocaleString('id-ID', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    // Auto print
                     setTimeout(() => window.print(), 500);
                 } else {
                     document.body.innerText = "Data tidak ditemukan";

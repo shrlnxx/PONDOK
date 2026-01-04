@@ -12,14 +12,40 @@ async function apiCall(endpoint, method = 'GET', body = null) {
     }
     try {
         const response = await fetch(API_BASE + endpoint, options);
+        
+        // Handle 401 Unauthorized
         if (response.status === 401 && !window.location.href.includes('index.html')) {
             window.location.href = 'index.html';
             return null;
         }
-        return await response.json();
+
+        // Get response text first
+        const responseText = await response.text();
+        
+        // Try to parse as JSON
+        try {
+            const jsonData = JSON.parse(responseText);
+            
+            // If HTTP status is not OK and no error message in JSON, add it
+            if (!response.ok && !jsonData.message) {
+                jsonData.message = `Server Error (${response.status})`;
+            }
+            
+            return jsonData;
+        } catch (jsonError) {
+            // If response is not JSON, return error object
+            console.error("Non-JSON response:", responseText.substring(0, 200));
+            return {
+                status: 'error',
+                message: `Server mengembalikan response yang tidak valid. Status: ${response.status}. Cek console untuk detail.`
+            };
+        }
     } catch (err) {
         console.error("API Error:", err);
-        return null;
+        return {
+            status: 'error',
+            message: `Gagal terhubung ke server: ${err.message}`
+        };
     }
 }
 

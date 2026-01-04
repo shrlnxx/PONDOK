@@ -26,12 +26,57 @@ if ($action == 'create' && $method == 'POST') {
         send_json(['status' => 'error', 'message' => 'Data tidak lengkap (NIS/Jenis wajib)'], 400);
     }
 
-    try {
-        $stmt = $pdo->prepare("INSERT INTO pelanggaran (santri_nis, tanggal_kejadian, jenis_pelanggaran, kategori, keterangan, pencatat_id) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$santri_nis, $tanggal, $jenis, $kategori, $keterangan, $pencatat_id]);
+    // HANDLE FILE UPLOAD (OPSIONAL)
+    $foto_path = null;
+    
+    if (isset($_FILES['foto_bukti']) && $_FILES['foto_bukti']['error'] === UPLOAD_ERR_OK) {
+        $file = $_FILES['foto_bukti'];
+        
+        // Validate file type
+        $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+        
+        if (!in_array($mimeType, $allowedTypes)) {
+            send_json(['status' => 'error', 'message' => 'Format file tidak valid. Gunakan JPG, PNG, atau JPEG.'], 400);
+        }
+        
+        // Validate file size (max 2MB)
+        $maxSize = 2 * 1024 * 1024;
+        if ($file['size'] > $maxSize) {
+            send_json(['status' => 'error', 'message' => 'Ukuran file terlalu besar. Maksimal 2MB.'], 400);
+        }
+        
+        // Create uploads directory if not exists
+        $uploadDir = '../uploads/pelanggaran/';
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+        
+        // Generate unique filename
+        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $filename = uniqid('pel_' . date('Ymd') . '_') . '.' . $extension;
+        $uploadPath = $uploadDir . $filename;
+        
+        // Move uploaded file
+        if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
+            $foto_path = 'uploads/pelanggaran/' . $filename; // Relative path for database
+        } else {
+            send_json(['status' => 'error', 'message' => 'Gagal mengupload file'], 500);
+        }
+    }
 
-        send_json(['status' => 'success', 'message' => 'Pelanggaran berhasil dicatat']);
+    try {
+        $stmt = $pdo->prepare("INSERT INTO pelanggaran (santri_nis, tanggal_kejadian, jenis_pelanggaran, kategori, keterangan, pencatat_id, foto_bukti) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$santri_nis, $tanggal, $jenis, $kategori, $keterangan, $pencatat_id, $foto_path]);
+
+        send_json(['status' => 'success', 'message' => 'Pelanggaran berhasil dicatat', 'foto_uploaded' => !empty($foto_path)]);
     } catch (Exception $e) {
+        // If database insert fails, delete uploaded file
+        if ($foto_path && file_exists('../' . $foto_path)) {
+            unlink('../' . $foto_path);
+        }
         send_json(['status' => 'error', 'message' => 'Database Error: ' . $e->getMessage()], 500);
     }
 }

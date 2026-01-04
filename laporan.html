@@ -85,7 +85,7 @@
             <!-- FILTER SECTION -->
             <div class="bg-black/20 border border-white/5 rounded-xl p-4 mb-6 no-print">
                 <small class="block text-slate-400 mb-3">Filter Data:</small>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-3">
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">Dari Tanggal</label>
                         <input type="date" id="startDate"
@@ -120,6 +120,13 @@
                             <i class='bx bx-filter'></i> Tampilkan
                         </button>
                     </div>
+                    <div class="flex items-end">
+                        <button onclick="resetFilter(event)"
+                            class="w-full px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                            title="Reset semua filter">
+                            <i class='bx bx-reset'></i> Reset
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -149,40 +156,344 @@
                 <div id="resultCount" class="text-slate-400 text-sm text-right mt-3"></div>
             </div>
         </div>
+
+        <!-- PRINT-ONLY HEADER (Professional Letterhead) -->
+        <div class="print-header">
+            <h1>PONDOK PESANTREN</h1>
+            <h2>Sistem Informasi Manajemen Pelanggaran & Perizinan</h2>
+            <p>
+                Alamat Pondok Pesantren | Telepon: (0xxx) xxx-xxxx | Email: info@pondok.ac.id
+            </p>
+            <div class="line-separator"></div>
+        </div>
+
+        <!-- PRINT-ONLY REPORT TITLE -->
+        <div class="report-title">
+            <h3>LAPORAN DATA PELANGGARAN SANTRI</h3>
+            <p id="print-period">Periode: <span id="printDateRange"></span></p>
+        </div>
+
+        <!-- PRINT-ONLY METADATA -->
+        <div class="print-meta">
+            Dicetak pada: <span id="printDateTime"></span>
+        </div>
     </div>
 
     <style>
+        /* Print Header - Only visible when printing */
+        .print-header {
+            display: none;
+        }
+
+        .report-title {
+            display: none;
+        }
+
+        .print-meta {
+            display: none;
+        }
+
         @media print {
-            body {
-                background: white !important;
-                color: black !important;
+
+            /* CRITICAL: Override ALL Tailwind/page styles */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                box-sizing: border-box !important;
             }
 
-            .no-print {
+            /* Page Setup */
+            @page {
+                size: A4 portrait;
+                margin: 15mm 12mm;
+            }
+
+            html,
+            body {
+                width: 100% !important;
+                height: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+                color: #000 !important;
+            }
+
+            body {
+                font-family: 'Arial', sans-serif !important;
+                font-size: 10pt !important;
+                line-height: 1.4 !important;
+            }
+
+            /* Force remove ALL purple/indigo backgrounds */
+            body,
+            body *,
+            #app,
+            #app *,
+            .bg-gradient-to-br,
+            .from-indigo-900,
+            .via-purple-900,
+            .to-slate-900,
+            div[class*="indigo"],
+            div[class*="purple"],
+            div[class*="slate"] {
+                background: white !important;
+                background-color: white !important;
+                background-image: none !important;
+            }
+
+            /* Hide ALL non-print elements */
+            .no-print,
+            button,
+            .bg-slate-800\/70>div:first-child,
+            nav,
+            header,
+            .print-button,
+            #app>div>div:first-child {
                 display: none !important;
             }
 
-            .bg-slate-800\/70 {
+            /* Print Header - Professional Letterhead */
+            .print-header {
+                display: block !important;
+                text-align: center;
+                border-bottom: 3px solid #000;
+                padding-bottom: 12px;
+                margin-bottom: 20px;
+                page-break-after: avoid;
+                background: white !important;
+            }
+
+            .print-header h1 {
+                margin: 0 0 5px 0 !important;
+                font-size: 18pt !important;
+                font-weight: bold !important;
+                text-transform: uppercase !important;
+                letter-spacing: 1.5px !important;
+                color: #000 !important;
+                background: none !important;
+            }
+
+            .print-header h2 {
+                margin: 0 0 8px 0 !important;
+                font-size: 14pt !important;
+                font-weight: bold !important;
+                color: #000 !important;
+                background: none !important;
+            }
+
+            .print-header p {
+                margin: 3px 0 !important;
+                font-size: 9pt !important;
+                line-height: 1.5 !important;
+                color: #333 !important;
+                background: none !important;
+            }
+
+            .print-header .line-separator {
+                height: 2px !important;
+                background: #000 !important;
+                margin: 8px auto 0 !important;
+                width: 100% !important;
+                border: none !important;
+            }
+
+            /* Report Title */
+            .report-title {
+                display: block !important;
+                text-align: center;
+                margin: 15px 0 20px 0 !important;
+                page-break-after: avoid;
+                background: white !important;
+            }
+
+            .report-title h3 {
+                margin: 0 0 6px 0 !important;
+                font-size: 14pt !important;
+                font-weight: bold !important;
+                text-transform: uppercase !important;
+                text-decoration: underline !important;
+                letter-spacing: 1px !important;
+                color: #000 !important;
+                background: none !important;
+            }
+
+            .report-title p {
+                margin: 0 !important;
+                font-size: 10pt !important;
+                font-weight: normal !important;
+                color: #000 !important;
+                background: none !important;
+            }
+
+            /* Main Content Container */
+            .bg-slate-800\/70,
+            .bg-slate-800\/70 * {
                 background: white !important;
                 border: none !important;
                 box-shadow: none !important;
+                padding: 0 !important;
             }
 
-            table {
-                border: 1px solid black;
+            /* Table Container */
+            .overflow-x-auto {
+                overflow: visible !important;
+                background: white !important;
             }
 
-            th {
-                background: #eee !important;
-                color: black !important;
-                border: 1px solid black;
-                padding: 5px;
+            /* Table Styling - Clean Professional */
+            #reportTable {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                margin: 15px 0 !important;
+                font-size: 9pt !important;
+                background: white !important;
+                border: 2px solid #000 !important;
             }
 
-            td {
-                border: 1px solid black;
-                color: black !important;
-                padding: 5px;
+            #reportTable * {
+                background: white !important;
+            }
+
+            #reportTable thead {
+                background: #000 !important;
+            }
+
+            #reportTable thead tr {
+                background: #000 !important;
+            }
+
+            #reportTable th {
+                background: #000 !important;
+                color: #fff !important;
+                border: 1px solid #000 !important;
+                padding: 10px 6px !important;
+                font-weight: bold !important;
+                text-align: left !important;
+                vertical-align: middle !important;
+                font-size: 9pt !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.5px !important;
+            }
+
+            #reportTable tbody {
+                background: white !important;
+            }
+
+            #reportTable tbody tr {
+                background: white !important;
+                page-break-inside: avoid !important;
+            }
+
+            #reportTable tbody tr:nth-child(even) {
+                background: #f5f5f5 !important;
+            }
+
+            #reportTable td {
+                border: 1px solid #999 !important;
+                color: #000 !important;
+                background: inherit !important;
+                padding: 8px 6px !important;
+                vertical-align: top !important;
+                line-height: 1.3 !important;
+            }
+
+            /* Cell content styling */
+            #reportTable td strong {
+                font-weight: bold !important;
+                color: #000 !important;
+            }
+
+            #reportTable td small,
+            #reportTable td .text-muted {
+                font-size: 8pt !important;
+                color: #555 !important;
+                display: block !important;
+                margin-top: 2px !important;
+            }
+
+            #reportTable td br {
+                display: block !important;
+                content: "" !important;
+                margin: 2px 0 !important;
+            }
+
+            /* Status colors - professional tones */
+            #reportTable td[style*="color: rgb(34, 197, 94)"],
+            #reportTable td[style*="color:#22c55e"],
+            #reportTable td[style*="color: rgb(34,197,94)"] {
+                color: #2d7a2d !important;
+                font-weight: bold !important;
+            }
+
+            #reportTable td[style*="color: rgb(239, 68, 68)"],
+            #reportTable td[style*="color:#ef4444"],
+            #reportTable td[style*="color: rgb(239,68,68)"] {
+                color: #c62828 !important;
+                font-weight: bold !important;
+            }
+
+            #reportTable td[style*="color: rgb(245, 158, 11)"],
+            #reportTable td[style*="color:#f59e0b"],
+            #reportTable td[style*="color: rgb(245,158,11)"] {
+                color: #c77700 !important;
+                font-weight: bold !important;
+            }
+
+            /* Print Metadata Footer */
+            .print-meta {
+                display: block !important;
+                text-align: right;
+                margin-top: 15px !important;
+                padding-top: 10px !important;
+                border-top: 1px solid #ccc !important;
+                font-size: 8pt !important;
+                color: #666 !important;
+                page-break-inside: avoid !important;
+                background: white !important;
+            }
+
+            /* Result count */
+            #resultCount {
+                display: block !important;
+                text-align: left;
+                margin: 15px 0 10px 0 !important;
+                font-size: 9pt !important;
+                font-weight: bold !important;
+                color: #000 !important;
+                padding: 8px 12px !important;
+                background: #f0f0f0 !important;
+                border-left: 4px solid #000 !important;
+                page-break-inside: avoid !important;
+            }
+
+            /* Page break control */
+            tr {
+                page-break-inside: avoid !important;
+            }
+
+            thead {
+                display: table-header-group !important;
+            }
+
+            tfoot {
+                display: table-footer-group !important;
+            }
+
+            /* Avoid breaking after headers */
+            h1,
+            h2,
+            h3,
+            .print-header,
+            .report-title {
+                page-break-after: avoid !important;
+            }
+
+            /* Force clean backgrounds everywhere */
+            table,
+            tbody,
+            tr,
+            td:not(#reportTable th) {
+                background: white !important;
             }
         }
     </style>
@@ -195,14 +506,45 @@
             document.getElementById('pageTitle').innerText = 'Laporan';
             document.getElementById('pageSubtitle').innerText = 'Export & Filter';
 
-            // Default: Hari ini
-            const now = new Date();
-            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-            document.getElementById('startDate').value = firstDay.toISOString().split('T')[0];
-            document.getElementById('endDate').value = now.toISOString().split('T')[0];
+            // Default: Tanggal kosong (tampilkan semua data)
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+
+            // Populate print metadata
+            updatePrintMetadata();
 
             loadReport();
         });
+
+        // Function to update print metadata
+        function updatePrintMetadata() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            // Format tanggal untuk Indonesia
+            const formatDate = (dateStr) => {
+                if (!dateStr) return '-';
+                const d = new Date(dateStr);
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                return d.toLocaleDateString('id-ID', options);
+            };
+
+            // Update date range
+            document.getElementById('printDateRange').innerText =
+                `${formatDate(startDate)} s/d ${formatDate(endDate)}`;
+
+            // Update print timestamp
+            const printTime = new Date();
+            const timeOptions = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            document.getElementById('printDateTime').innerText =
+                printTime.toLocaleDateString('id-ID', timeOptions);
+        }
 
         // Global variable untuk menyimpan raw data dari server
         let rawData = [];
@@ -212,11 +554,19 @@
             const start = document.getElementById('startDate').value;
             const end = document.getElementById('endDate').value;
 
+            // Update print metadata whenever report is loaded
+            updatePrintMetadata();
+
             const tbody = document.getElementById('reportBody');
             tbody.innerHTML = '<tr><td colspan="6" class="text-center">Memuat data...</td></tr>';
 
             // 1. Ambil data dari API
-            const res = await apiCall(`pelanggaran.php?action=list&start=${start}&end=${end}`);
+            // Jika tanggal kosong, jangan kirim parameter (ambil semua data)
+            let apiUrl = 'pelanggaran.php?action=list';
+            if (start && end) {
+                apiUrl += `&start=${start}&end=${end}`;
+            }
+            const res = await apiCall(apiUrl);
 
             if (res && res.data) {
                 rawData = res.data;
@@ -292,6 +642,32 @@
             } else {
                 tbody.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada data yang cocok dengan filter</td></tr>';
                 document.getElementById('resultCount').innerText = '';
+            }
+        }
+
+        // Reset Filter Function
+        function resetFilter(e) {
+            // Reset all filter inputs (kosongkan semua)
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            document.getElementById('filterNama').value = '';
+            document.getElementById('filterKelas').value = '';
+            document.getElementById('filterAsrama').value = '';
+
+            // Reload data (tampilkan semua data)
+            loadReport();
+
+            // Visual feedback
+            const btn = e ? e.target.closest('button') : null;
+            if (btn) {
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="bx bx-check"></i> Reset!';
+                btn.classList.add('bg-green-600');
+
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('bg-green-600');
+                }, 1000);
             }
         }
 

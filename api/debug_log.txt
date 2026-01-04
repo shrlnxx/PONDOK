@@ -350,3 +350,213 @@
 [2026-01-04 15:44:35] Request: GET settings
 [2026-01-04 15:44:52] Request: GET stats
 [2026-01-04 15:44:52] Request: GET settings
+[2026-01-04 15:56:08] Request: GET settings
+[2026-01-04 15:56:08] Request: GET stats
+[2026-01-04 15:56:08] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 15:56:14] Request: GET list
+[2026-01-04 15:56:14] List Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 15:56:17] Request: GET stats
+[2026-01-04 15:56:17] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 15:56:38] Request: GET settings
+[2026-01-04 15:56:38] Request: GET stats
+[2026-01-04 15:56:38] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 15:56:55] Request: GET list
+[2026-01-04 15:56:55] List Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 15:56:56] Request: GET stats
+[2026-01-04 15:56:56] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 15:58:01] Request: GET stats
+[2026-01-04 15:58:01] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 15:58:01] Request: GET settings
+[2026-01-04 15:58:04] Request: GET list
+[2026-01-04 15:58:04] List Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 15:58:04] Request: GET stats
+[2026-01-04 15:58:04] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:07:25] Request: GET stats
+[2026-01-04 16:07:25] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:07:25] Request: GET settings
+[2026-01-04 16:07:28] Request: GET list
+[2026-01-04 16:07:28] List Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:07:31] Request: GET settings
+[2026-01-04 16:08:54] Request: GET stats
+[2026-01-04 16:08:54] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:08:54] Request: GET settings
+[2026-01-04 16:09:13] Request: GET stats
+[2026-01-04 16:09:13] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:09:13] Request: GET settings
+[2026-01-04 16:09:16] Request: GET list
+[2026-01-04 16:09:16] List Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:09:20] Request: GET stats
+[2026-01-04 16:09:20] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:09:51] Request: POST create
+[2026-01-04 16:09:51] Raw Input: {"nis":"09876","tujuan":"URUS KTP","waktu_keluar":"2026-01-04 16:09","rencana_kembali":"2026-01-05 17:00","keterangan":"FOTOKAN KTP NYA"}
+[2026-01-04 16:09:51] Processing Create: NIS=09876, Keluar=2026-01-04 16:09:00, Kembali=2026-01-05 17:00:00
+[2026-01-04 16:09:56] Request: POST create
+[2026-01-04 16:09:56] Raw Input: {"nis":"09876","tujuan":"URUS KTP","waktu_keluar":"2026-01-04 16:09","rencana_kembali":"2026-01-05 17:00","keterangan":"FOTOKAN KTP NYA"}
+[2026-01-04 16:09:56] Processing Create: NIS=09876, Keluar=2026-01-04 16:09:00, Kembali=2026-01-05 17:00:00
+[2026-01-04 16:10:04] Request: GET list
+[2026-01-04 16:10:04] List Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:10:13] Request: POST create
+[2026-01-04 16:10:13] Raw Input: {"nis":"09876","tujuan":"URUS KTP","waktu_keluar":"2026-01-04 16:09","rencana_kembali":"2026-01-05 17:00","keterangan":"FOTOKAN KTP NYA"}
+[2026-01-04 16:10:13] Processing Create: NIS=09876, Keluar=2026-01-04 16:09:00, Kembali=2026-01-05 17:00:00
+[2026-01-04 16:10:49] Request: POST create
+[2026-01-04 16:10:49] Raw Input: {"nis":"123454566","tujuan":"SERVICE MOTOR","waktu_keluar":"2026-01-04 16:09","rencana_kembali":"2026-01-05 18:00","keterangan":"MURNI MOTOR SNDIRI AN"}
+[2026-01-04 16:10:49] Processing Create: NIS=123454566, Keluar=2026-01-04 16:09:00, Kembali=2026-01-05 18:00:00
+[2026-01-04 16:12:03] Request: GET list
+[2026-01-04 16:12:03] List Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:12:04] Request: GET stats
+[2026-01-04 16:12:04] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:12:07] Request: POST create
+[2026-01-04 16:12:07] Raw Input: {"nis":"123454566","tujuan":"SERVICE MOTOR","waktu_keluar":"2026-01-04 16:09","rencana_kembali":"2026-01-05 18:00","keterangan":"MURNI MOTOR SNDIRI AN"}
+[2026-01-04 16:12:07] Processing Create: NIS=123454566, Keluar=2026-01-04 16:09:00, Kembali=2026-01-05 18:00:00
+[2026-01-04 16:13:33] Request: GET stats
+[2026-01-04 16:13:33] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:13:33] Request: GET settings
+[2026-01-04 16:13:44] Request: GET stats
+[2026-01-04 16:13:44] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:13:44] Request: GET settings
+[2026-01-04 16:14:25] Request: GET settings
+[2026-01-04 16:14:25] Request: GET stats
+[2026-01-04 16:14:25] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:14:53] Request: POST create
+[2026-01-04 16:14:53] Raw Input: {"nis":"09876","tujuan":"pernikahan","waktu_keluar":"2026-01-04 16:14","rencana_kembali":"2026-01-06 17:00","keterangan":"gitu tok"}
+[2026-01-04 16:14:53] Processing Create: NIS=09876, Keluar=2026-01-04 16:14:00, Kembali=2026-01-06 17:00:00
+[2026-01-04 16:18:38] Request: GET settings
+[2026-01-04 16:18:38] Request: GET stats
+[2026-01-04 16:18:38] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:18:51] Request: POST create
+[2026-01-04 16:18:51] Raw Input: {"nis":"09876","tujuan":"URUS KTP","waktu_keluar":"2026-01-04 16:18","rencana_kembali":"2026-01-09 19:18","keterangan":""}
+[2026-01-04 16:18:51] Processing Create: NIS=09876, Keluar=2026-01-04 16:18:00, Kembali=2026-01-09 19:18:00
+[2026-01-04 16:24:08] Request: GET stats
+[2026-01-04 16:24:08] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:24:08] Request: GET settings
+[2026-01-04 16:24:08] FATAL ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan_settings' doesn't exist in C:\laragon\www\PONDOK\api\perizinan.php:221
+[2026-01-04 16:24:31] Request: POST create
+[2026-01-04 16:24:31] Raw Input: {"nis":"123454566","tujuan":"SERVICE MOTOR","waktu_keluar":"2026-01-04 16:24","rencana_kembali":"2026-01-09 19:24","keterangan":""}
+[2026-01-04 16:24:31] Processing Create: NIS=123454566, Keluar=2026-01-04 16:24:00, Kembali=2026-01-09 19:24:00
+[2026-01-04 16:24:31] FATAL ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist in C:\laragon\www\PONDOK\api\perizinan.php:100
+[2026-01-04 16:26:14] Request: GET settings
+[2026-01-04 16:26:14] FATAL ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan_settings' doesn't exist in C:\laragon\www\PONDOK\api\perizinan.php:221
+[2026-01-04 16:26:14] Request: GET stats
+[2026-01-04 16:26:14] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:26:57] Request: GET stats
+[2026-01-04 16:26:57] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:26:57] Request: GET settings
+[2026-01-04 16:26:57] FATAL ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan_settings' doesn't exist in C:\laragon\www\PONDOK\api\perizinan.php:221
+[2026-01-04 16:27:00] Request: GET stats
+[2026-01-04 16:27:00] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:27:00] Request: GET settings
+[2026-01-04 16:27:00] FATAL ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan_settings' doesn't exist in C:\laragon\www\PONDOK\api\perizinan.php:221
+[2026-01-04 16:28:00] Request: GET stats
+[2026-01-04 16:28:00] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:28:00] Request: GET settings
+[2026-01-04 16:28:00] FATAL ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan_settings' doesn't exist in C:\laragon\www\PONDOK\api\perizinan.php:221
+[2026-01-04 16:28:24] Request: GET settings
+[2026-01-04 16:28:24] FATAL ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan_settings' doesn't exist in C:\laragon\www\PONDOK\api\perizinan.php:221
+[2026-01-04 16:28:24] Request: GET list
+[2026-01-04 16:28:24] List Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:28:26] Request: GET stats
+[2026-01-04 16:28:26] Stats Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:28:27] Request: GET list
+[2026-01-04 16:28:27] List Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:28:36] Request: POST create
+[2026-01-04 16:28:36] Raw Input: {"nis":"09876","tujuan":"URUS KTP","waktu_keluar":"2026-01-04 16:28","rencana_kembali":"2026-01-04 19:28","keterangan":""}
+[2026-01-04 16:28:36] Processing Create: NIS=09876, Keluar=2026-01-04 16:28:00, Kembali=2026-01-04 19:28:00
+[2026-01-04 16:28:36] FATAL ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist in C:\laragon\www\PONDOK\api\perizinan.php:100
+[2026-01-04 16:30:05] Request: GET list
+[2026-01-04 16:30:05] List Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan' doesn't exist
+[2026-01-04 16:30:05] Request: GET settings
+[2026-01-04 16:30:05] FATAL ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'pelanggaran_db.perizinan_settings' doesn't exist in C:\laragon\www\PONDOK\api\perizinan.php:221
+[2026-01-04 16:32:27] Request: GET stats
+[2026-01-04 16:32:27] Request: GET settings
+[2026-01-04 16:32:27] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 16:32:40] Request: POST create
+[2026-01-04 16:32:40] Raw Input: {"nis":"09876","tujuan":"SERVICE MOTOR","waktu_keluar":"2026-01-04 16:32","rencana_kembali":"2026-01-05 19:32","keterangan":""}
+[2026-01-04 16:32:40] Processing Create: NIS=09876, Keluar=2026-01-04 16:32:00, Kembali=2026-01-05 19:32:00
+[2026-01-04 16:32:40] Success Create ID: 1
+[2026-01-04 16:32:42] Request: GET stats
+[2026-01-04 16:32:42] Request: GET read
+[2026-01-04 16:33:04] Request: GET read
+[2026-01-04 16:33:24] Request: GET list
+[2026-01-04 16:33:40] Request: POST create
+[2026-01-04 16:33:40] Raw Input: {"nis":"123454566","tujuan":"pernikahan","waktu_keluar":"2026-01-04 16:32","rencana_kembali":"2026-01-06 19:32","keterangan":"dasdsadasd"}
+[2026-01-04 16:33:40] Processing Create: NIS=123454566, Keluar=2026-01-04 16:32:00, Kembali=2026-01-06 19:32:00
+[2026-01-04 16:33:40] Success Create ID: 2
+[2026-01-04 16:33:41] Request: GET stats
+[2026-01-04 16:33:41] Request: GET list
+[2026-01-04 16:33:41] Request: GET read
+[2026-01-04 16:34:01] Request: GET list
+[2026-01-04 16:34:14] Request: GET list
+[2026-01-04 16:34:18] Request: GET list
+[2026-01-04 16:34:30] Request: GET stats
+[2026-01-04 16:34:30] Request: GET settings
+[2026-01-04 16:34:30] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 16:34:59] Request: GET stats
+[2026-01-04 16:34:59] Request: GET settings
+[2026-01-04 16:34:59] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 16:35:19] Request: GET list
+[2026-01-04 16:35:30] Request: GET stats
+[2026-01-04 16:37:49] Request: GET stats
+[2026-01-04 16:37:49] Request: GET settings
+[2026-01-04 16:37:49] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 16:38:04] Request: GET settings
+[2026-01-04 16:38:04] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 16:38:04] Request: GET stats
+[2026-01-04 16:39:48] Request: GET list
+[2026-01-04 16:40:01] Request: GET stats
+[2026-01-04 16:40:01] Request: GET settings
+[2026-01-04 16:40:01] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 16:40:13] Request: GET stats
+[2026-01-04 16:40:13] Request: GET settings
+[2026-01-04 16:40:13] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 16:40:37] Request: GET settings
+[2026-01-04 16:40:37] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 16:40:37] Request: GET stats
+[2026-01-04 16:40:41] Request: GET list
+[2026-01-04 16:43:57] Request: GET stats
+[2026-01-04 16:43:57] Request: GET settings
+[2026-01-04 16:43:57] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 16:44:02] Request: GET list
+[2026-01-04 16:44:03] Request: GET list
+[2026-01-04 16:44:08] Request: GET list
+[2026-01-04 16:44:12] Request: GET list
+[2026-01-04 16:44:14] Request: GET list
+[2026-01-04 16:44:23] Request: GET stats
+[2026-01-04 16:44:23] Request: GET settings
+[2026-01-04 16:44:23] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 16:44:24] Request: GET list
+[2026-01-04 16:44:33] Request: GET settings
+[2026-01-04 16:44:33] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 16:44:33] Request: GET stats
+[2026-01-04 16:46:22] Request: GET stats
+[2026-01-04 16:46:22] Request: GET settings
+[2026-01-04 16:46:22] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 16:50:31] Request: GET stats
+[2026-01-04 16:50:31] Request: GET settings
+[2026-01-04 16:50:31] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 16:50:32] Request: GET list
+[2026-01-04 16:50:33] Request: GET list
+[2026-01-04 16:50:37] Request: GET stats
+[2026-01-04 16:50:37] Request: GET settings
+[2026-01-04 16:50:37] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 17:02:04] Request: GET stats
+[2026-01-04 17:02:04] Request: GET settings
+[2026-01-04 17:02:04] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 17:07:17] Request: GET stats
+[2026-01-04 17:07:17] Request: GET settings
+[2026-01-04 17:07:17] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 17:07:24] Request: GET read
+[2026-01-04 17:09:21] Request: GET stats
+[2026-01-04 17:09:21] Request: GET settings
+[2026-01-04 17:09:21] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 17:09:27] Request: GET read
+[2026-01-04 17:16:51] Request: GET settings
+[2026-01-04 17:16:51] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 17:16:51] Request: GET stats
+[2026-01-04 17:16:56] Request: POST return
+[2026-01-04 17:16:56] Request: GET stats
+[2026-01-04 17:16:56] Request: GET list
+[2026-01-04 17:16:59] Request: GET read
+[2026-01-04 17:30:25] Request: GET settings
+[2026-01-04 17:30:25] FATAL ERROR: SQLSTATE[HY000]: General error: PDO::FETCH_KEY_PAIR fetch mode requires the result set to contain exactly 2 columns. in C:\laragon\www\PONDOK\api\perizinan.php:222
+[2026-01-04 17:30:25] Request: GET stats
+[2026-01-04 17:30:28] Request: GET list
