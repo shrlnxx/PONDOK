@@ -98,21 +98,28 @@
         // Inject layout
         document.addEventListener('DOMContentLoaded', async () => {
             await checkAuth();
-            renderLayout('perizinan'); // Will assume 'perizinan' menu active
+            renderLayout('perizinan');
 
-            // Rewrite Main Content with Tabs - use 'main' tag selector
+            // Update System Header
+            const pageTitle = document.getElementById('pageTitle');
+            if (pageTitle) {
+                pageTitle.innerText = 'Modul Perizinan';
+                document.getElementById('pageSubtitle').innerText = 'Kelola izin keluar masuk santri terintegrasi';
+
+                // Add Clock to Header
+                const header = document.querySelector('header');
+                const clockDiv = document.createElement('div');
+                clockDiv.id = 'clock';
+                clockDiv.className = 'bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-xl px-4 py-2 font-mono text-xl font-bold text-white hidden sm:block';
+                clockDiv.innerText = '--:--';
+                header.appendChild(clockDiv);
+            }
+
+            // Append Custom Content to Main (Preserving Header)
             const main = document.querySelector('main');
+            const contentContainer = document.createElement('div');
 
-            // Custom Layout for Permissions Module
-            main.innerHTML = `
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                    <div>
-                        <h2 class="text-2xl font-bold text-white mb-1">Modul Perizinan</h2>
-                        <p class="text-slate-400">Kelola izin keluar masuk santri terintegrasi</p>
-                    </div>
-                    <div id="clock" class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-xl px-4 py-2 font-mono text-xl font-bold text-white">--:--</div>
-                </div>
-
+            contentContainer.innerHTML = `
                 <div class="tabs">
                     <button class="tab-btn active" onclick="switchTab('dashboard')"><i class='bx bxs-dashboard'></i> Dashboard Izin</button>
                     <button class="tab-btn" onclick="switchTab('input')"><i class='bx bxs-file-plus'></i> Input Izin</button>
@@ -159,7 +166,7 @@
                     </div>
                     <div class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
                         <h3 class="text-xl font-bold text-white mb-4">Aktivitas Terbaru</h3>
-                        <div class="overflow-hidden rounded-xl border border-white/5 bg-slate-900/30">
+                        <div class="overflow-x-auto rounded-xl border border-white/5 bg-slate-900/30">
                             <table class="w-full border-collapse">
                                 <thead>
                                     <tr class="bg-indigo-900/50 backdrop-blur-sm border-b border-white/10">
@@ -274,7 +281,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="overflow-hidden rounded-xl border border-white/5 bg-slate-900/30">
+                        <div class="overflow-x-auto rounded-xl border border-white/5 bg-slate-900/30">
                             <table class="w-full border-collapse">
                                 <thead>
                                     <tr class="bg-indigo-900/50 backdrop-blur-sm border-b border-white/10">
@@ -314,10 +321,12 @@
                     </div>
                 </div>
             `;
+            main.appendChild(contentContainer);
 
             // Initialize Clock
             setInterval(() => {
-                document.getElementById('clock').innerText = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                const c = document.getElementById('clock');
+                if (c) c.innerText = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             }, 1000);
 
             // Load Initial Dashboard
@@ -408,33 +417,46 @@
             let badgeClass = '';
             let rowClass = 'group hover:bg-white/5 transition-all duration-300 border-b border-indigo-500/5 last:border-0';
 
-            // Logic Display Custom with better badge colors
-            if (r.status === 'TERLAMBAT' && r.waktu_kembali) {
-                label = 'KEMBALI TERLAMBAT';
-                badgeClass = 'bg-red-500/10 text-red-400 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]';
-            } else if (r.status === 'SELESAI') {
-                label = 'TEPAT WAKTU';
-                badgeClass = 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]';
-            } else if (r.status === 'TERLAMBAT' && !r.waktu_kembali) {
-                label = 'TELAT (BELUM KEMBALI)';
-                badgeClass = 'bg-rose-500/10 text-rose-400 border border-rose-500/20 shadow-[0_0_15px_rgba(244,63,94,0.1)] animate-pulse';
-            } else if (r.status === 'AKTIF') {
+            // DYNAMIC STATUS CALCULATION
+            const now = new Date();
+            // Ensure safe date parsing for Safari/older browsers (replace space with T)
+            const planTime = new Date(r.rencana_kembali.replace(' ', 'T'));
+            const isOverdue = now > planTime;
+
+            if (!r.waktu_kembali) {
+                // STATUS SAAT MASIH DI LUAR (BELUM KEMBALI)
+                // User ingin status tetap AKTIF/SEDANG IZIN sampai diklik ceklis
                 label = 'SEDANG IZIN';
                 badgeClass = 'bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)]';
+
+                if (isOverdue) {
+                    // Indikator telat tetap ada sebagai pengingat, tapi label utama tetap SEDANG IZIN
+                    label = 'SEDANG IZIN (TERLAMBAT!)';
+                    badgeClass = 'bg-red-500/10 text-red-400 border border-red-500/20 animate-pulse';
+                }
+            } else {
+                // STATUS SETELAH KEMBALI (KONFIRMASI SELESAI)
+                if (r.status === 'TERLAMBAT') {
+                    label = 'KEMBALI TERLAMBAT';
+                    badgeClass = 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
+                } else {
+                    label = 'TEPAT WAKTU';
+                    badgeClass = 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+                }
             }
 
             const badge = `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold tracking-wide uppercase ${badgeClass}">
-                <i class='bx ${r.status === 'SELESAI' ? 'bx-check-circle' : r.status === 'AKTIF' ? 'bx-time-five' : 'bx-error-circle'} text-sm'></i>
+                <i class='bx ${label.includes('TERLAMBAT') ? 'bx-error-circle' : 'bx-check-circle'} text-sm'></i>
                 ${label}
             </span>`;
 
             let btn = '';
-            // Allow returning if AKTIF or TERLAMBAT (and not yet returned)
-            if (!r.waktu_kembali && (r.status === 'AKTIF' || r.status === 'TERLAMBAT')) {
+            // Tampilkan tombol KEMBALI (checklist) selama santri belum kembali
+            if (!r.waktu_kembali) {
                 btn = `<button onclick="doReturn(${r.id}, '${r.rencana_kembali}')" 
-                    class="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold rounded-lg shadow-lg hover:shadow-emerald-500/30 transform hover:scale-105 transition-all duration-300 text-xs tracking-wide group-hover:opacity-100" 
-                    title="Tandai Kembali">
-                    <i class='bx bx-check-double text-lg'></i> KEMBALI
+                    class="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg shadow-lg hover:shadow-emerald-500/30 transform hover:scale-105 transition-all duration-300 text-xs tracking-wide" 
+                    title="Klik jika santri sudah kembali">
+                    <i class='bx bx-check-circle text-lg'></i> CEKLIS KEMBALI
                 </button>`;
             }
             const printBtn = `<button onclick="doPrint(${r.id})" 

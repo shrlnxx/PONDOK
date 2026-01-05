@@ -2,107 +2,140 @@
 <html>
 
 <head>
-    <title>Cetak Surat Izin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=400, initial-scale=1.0">
     <style>
-        body {
+        /* Hilangkan margin default browser saat print */
+        @page {
             margin: 0;
-            padding: 5px;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            width: 58mm;
+            size: auto;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact;
+        }
+
+        body {
+            width: 400px;
+            /* Samakan dengan lebar viewport */
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+            background: white;
             color: black;
         }
 
-        @media print {
-            @page {
-                margin: 0;
-            }
+        .ticket {
+            width: 100%;
+            padding: 10px;
+        }
 
-            body {
-                margin: 5px;
-            }
+        /* Penyesuaian Font agar proporsional dengan lebar 400px */
+        .text-center {
+            text-align: center;
+        }
 
-            .no-print {
-                display: none;
-            }
+        .font-bold {
+            font-weight: bold;
+        }
+
+        .logo {
+            width: 180px;
+            /* Ukuran logo lebih besar agar jelas */
+            display: block;
+            margin: 0 auto 10px;
+            filter: grayscale(1);
+        }
+
+        .header-title {
+            font-size: 16pt;
+            line-height: 1.2;
+            margin-bottom: 5px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12pt;
+            margin: 5px 0;
+        }
+
+        .label {
+            font-size: 10pt;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        .value {
+            font-size: 14pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .line {
+            border-bottom: 2px solid black;
+            margin: 10px 0;
+        }
+
+        .line-dashed {
+            border-bottom: 2px dashed black;
+            margin: 10px 0;
+        }
+
+        .return-box {
+            border: 3px solid black;
+            text-align: center;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 20pt;
+            font-weight: 900;
+        }
+
+        .footer {
+            font-size: 10pt;
+            text-align: center;
+            margin-top: 15px;
+            line-height: 1.4;
         }
     </style>
 </head>
 
-<body class="bg-white">
-    <div id="loading" class="text-center py-4">Memuat Data...</div>
-    <div id="content" class="hidden">
-        <div class="text-center font-bold text-sm uppercase mb-2">PPS SHIROTHUL FUQOHA</div>
-        <div class="text-center text-xs mb-2">Kartu Izin Keluar</div>
-        <div class="border-b border-dashed border-black my-2"></div>
+<body>
 
-        <div class="flex justify-between text-xs mb-1">
-            <span>Tgl:</span>
-            <span id="p-date"></span>
-        </div>
-        <div class="flex justify-between text-xs mb-1">
-            <span>Jam:</span>
-            <span id="p-time"></span>
-        </div>
-        <div class="flex justify-between text-xs mb-1">
-            <span>Oleh:</span>
-            <span id="p-petugas"></span>
+    <div class="ticket">
+        <div class="text-center">
+            <img src="https://keamanan.pondoksepanjang.com/LOGO.png" class="logo">
+            <div class="header-title font-bold">PPS SHIROTHUL FUQOHA</div>
+            <div style="font-size: 12pt; margin-bottom: 10px;">Kartu Izin Keluar</div>
         </div>
 
-        <div class="border-b border-dashed border-black my-2"></div>
+        <div class="line"></div>
 
-        <div class="font-bold text-sm mb-1" id="p-nama"></div>
-        <div class="text-xs mb-2" id="p-detail"></div>
+        <div class="info-row"><span class="font-bold">TGL:</span><span id="p-date">4/1/2026</span></div>
+        <div class="info-row"><span class="font-bold">JAM:</span><span id="p-time">19:22</span></div>
+        <div class="info-row"><span class="font-bold">CS:</span><span id="p-petugas">TES</span></div>
 
-        <div class="border-b border-dashed border-black my-2"></div>
+        <div class="line-dashed"></div>
 
-        <div class="font-bold text-xs mb-1">TUJUAN:</div>
-        <div class="text-xs mb-2" id="p-tujuan"></div>
+        <div class="label">Nama Santri:</div>
+        <div class="value" id="p-nama">PAIJO</div>
+        <div id="p-detail" style="font-size: 11pt;">2C - -</div>
 
-        <div class="border-b border-dashed border-black my-2"></div>
-        <div class="text-center font-bold text-xs">WAJIB KEMBALI SEBELUM:</div>
-        <div class="text-center font-bold text-base my-2" id="p-kembali"></div>
-        <div class="border-b border-dashed border-black my-2"></div>
+        <div class="label">Keperluan / Tujuan:</div>
+        <div class="value" style="font-size: 12pt;" id="p-tujuan">Sakit</div>
 
-        <div class="text-center text-[10px] mt-3">
-            Simpan struk ini.<br>Serahkan ke petugas saat kembali.
+        <div class="line" style="border-width: 4px;"></div>
+
+        <div class="text-center font-bold" style="font-size: 12pt;">WAJIB KEMBALI SEBELUM:</div>
+        <div class="return-box" id="p-kembali">04/01/2026 03:38</div>
+
+        <div class="footer">
+            <b>Simpan kartu ini & serahkan<br>ke petugas saat kembali.</b>
         </div>
     </div>
 
-    <script src="assets/js/main.js"></script>
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get('id');
-
-        if (!id) {
-            document.body.innerText = "ID Tidak Valid";
-        } else {
-            apiCall(`perizinan.php?action=read&id=${id}`).then(res => {
-                if (res) {
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('content').classList.remove('hidden');
-
-                    const d = new Date(res.waktu_keluar);
-                    const k = new Date(res.rencana_kembali);
-
-                    document.getElementById('p-date').innerText = d.toLocaleDateString('id-ID');
-                    document.getElementById('p-time').innerText = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                    document.getElementById('p-petugas').innerText = (res.petugas_nama || 'Admin').split(' ')[0]; // First name only
-
-                    document.getElementById('p-nama').innerText = res.nama;
-                    document.getElementById('p-detail').innerText = `${res.kelas} - ${res.asrama}`;
-                    document.getElementById('p-tujuan').innerText = res.tujuan_izin;
-
-                    document.getElementById('p-kembali').innerText = k.toLocaleString('id-ID', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-                    setTimeout(() => window.print(), 500);
-                } else {
-                    document.body.innerText = "Data tidak ditemukan";
-                }
-            });
-        }
-    </script>
 </body>
 
 </html>

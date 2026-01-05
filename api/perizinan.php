@@ -26,25 +26,23 @@ if ($action == 'stats') {
         $stmt = $pdo->query("SELECT COUNT(*) as cnt FROM perizinan WHERE DATE(waktu_keluar) = CURDATE()");
         $today = $stmt->fetch()['cnt'];
 
-        // Sedang Izin (Status AKTIF)
-        $stmt = $pdo->query("SELECT COUNT(*) as cnt FROM perizinan WHERE status = 'AKTIF'");
+        // Sedang Izin (Semua yang belum kembali)
+        $stmt = $pdo->query("SELECT COUNT(*) as cnt FROM perizinan WHERE waktu_kembali IS NULL");
         $active = $stmt->fetch()['cnt'];
 
-        // Terlambat Kembali (Status TERLAMBAT & Belum Kembali)
-        $stmt = $pdo->query("SELECT COUNT(*) as cnt FROM perizinan WHERE status = 'TERLAMBAT' AND waktu_kembali IS NULL");
-        $late = $stmt->fetch()['cnt'];
-
-        // Auto-update status to TERLAMBAT if overdue
-        // Auto-update status to TERLAMBAT if overdue
+        // Terlambat Kembali (Belum Kembali & Sudah Lewat jam rencana kembali + toleransi)
         $tolerance = 15; // default fallback
         $s = $pdo->query("SELECT setting_value FROM perizinan_settings WHERE setting_key = 'tolerance_minutes'");
         if ($r = $s->fetch())
             $tolerance = (int) $r['setting_value'];
 
-        // Use PHP time instead of MySQL NOW() to ensure timezone consistency (Asia/Jakarta)
         $current_time = date('Y-m-d H:i:s');
-        $stmt = $pdo->prepare("UPDATE perizinan SET status = 'TERLAMBAT' WHERE status = 'AKTIF' AND ? > DATE_ADD(rencana_kembali, INTERVAL ? MINUTE)");
+        $stmt = $pdo->prepare("SELECT COUNT(*) as cnt FROM perizinan WHERE waktu_kembali IS NULL AND ? > DATE_ADD(rencana_kembali, INTERVAL ? MINUTE)");
         $stmt->execute([$current_time, $tolerance]);
+        $late = $stmt->fetch()['cnt'];
+
+        // Hilangkan auto-update status di sini agar status tetap 'AKTIF' saat santri di luar 
+        // Sesuai permintaan: status baru berubah SETELAH diklik ceklis (konfirmasi kembali)
 
         // Recent Activity
         $stmt = $pdo->query("
