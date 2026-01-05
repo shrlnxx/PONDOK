@@ -89,6 +89,15 @@
                 </table>
             </div>
         </div>
+        <!-- Footer -->
+        <div class="mt-8 text-center pt-6 border-t border-white/10 pb-6">
+            <p class="text-slate-400 text-sm font-medium">
+                &copy; 2026 <span class="text-indigo-400 font-bold">PPS Shirothul Fuqoha'</span>. All rights reserved.
+            </p>
+            <p class="mt-2 text-xs text-slate-500 flex items-center justify-center gap-2">
+                <i class='bx bx-shield-quarter'></i> Sistem Keamanan Terintegrasi v2.0 - shrllnix
+            </p>
+        </div>
     </div>
 
     <script src="assets/js/main.js"></script>
@@ -117,15 +126,18 @@
                         const badgeColor = row.status_penanganan === 'Selesai' ? '#22c55e' : '#ef4444';
                         tbody.innerHTML += `
                         <tr>
-                            <td>${row.created_at}</td>
-                            <td><strong>${row.nama}</strong></td>
-                            <td>${row.jenis_pelanggaran}</td>
-                            <td><span style="color:${badgeColor}">${row.status_penanganan}</span></td>
+                            <td class="py-3 px-4 text-slate-300">${row.created_at}</td>
+                            <td class="py-3 px-4 text-white"><strong>${row.nama}</strong></td>
+                            <td class="py-3 px-4 text-slate-300">
+                                <div>${row.jenis_pelanggaran}</div>
+                                <div class="text-xs text-slate-500">${row.kategori}</div>
+                            </td>
+                            <td class="py-3 px-4"><span class="px-2 py-1 rounded text-xs font-bold bg-opacity-20 border border-opacity-30" style="color:${badgeColor}; background-color:${badgeColor}20; border-color:${badgeColor}40">${row.status_penanganan}</span></td>
                         </tr>
                        `;
                     });
                 } else {
-                    tbody.innerHTML = '<tr><td colspan="4" class="text-center">Belum ada aktivitas</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-slate-500">Belum ada aktivitas</td></tr>';
                 }
             }
         }

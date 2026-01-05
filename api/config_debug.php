@@ -19,9 +19,9 @@ header('Access-Control-Allow-Headers: Content-Type');
 
 // DATABASE CONNECTION
 $host = 'localhost';
-$dbname = 'ponw6793_keamanan';
-$username = 'ponw6793_keamanan';
-$password = 'NgwIvUQIbK$C5mYA';
+$dbname = 'pelanggaran_db';
+$username = 'root';
+$password = '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
@@ -30,7 +30,7 @@ try {
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([
-        'status' => 'error', 
+        'status' => 'error',
         'message' => 'Database Connection Failed: ' . $e->getMessage()
     ]);
     exit;

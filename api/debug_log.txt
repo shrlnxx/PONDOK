@@ -597,3 +597,102 @@
 [2026-01-04 17:30:25] Request: GET stats
 [2026-01-04 17:30:28] Request: GET list
 >>>>>>> 51cb28ad1fb7b056ba90b7cfcef801fb68fac1ab
+[2026-01-05 14:14:09] Request: GET stats
+[2026-01-05 14:14:10] Request: GET settings
+[2026-01-05 14:14:30] Request: GET read
+[2026-01-05 14:15:55] Request: GET settings
+[2026-01-05 14:15:55] Request: GET stats
+[2026-01-05 14:15:59] Request: GET read
+[2026-01-05 14:16:07] Request: GET read
+[2026-01-05 14:18:26] Request: POST create
+[2026-01-05 14:18:26] Raw Input: {"nis":"4565456456","tujuan":"tes tombol dan status","waktu_keluar":"2026-01-05 14:15","rencana_kembali":"2026-01-05 17:15","keterangan":"dsfsdf"}
+[2026-01-05 14:18:26] Processing Create: NIS=4565456456, Keluar=2026-01-05 14:15:00, Kembali=2026-01-05 17:15:00
+[2026-01-05 14:18:26] Success Create ID: 16
+[2026-01-05 14:18:27] Request: GET stats
+[2026-01-05 14:18:28] Request: GET read
+[2026-01-05 14:18:48] Request: GET stats
+[2026-01-05 14:18:48] Request: GET settings
+[2026-01-05 14:18:58] Request: POST return
+[2026-01-05 14:18:58] Request: GET stats
+[2026-01-05 14:18:58] Request: GET list
+[2026-01-05 14:19:00] Request: GET read
+[2026-01-05 14:19:40] Request: GET list
+[2026-01-05 14:19:44] Request: GET settings
+[2026-01-05 14:20:22] Request: GET stats
+[2026-01-05 14:20:24] Request: GET stats
+[2026-01-05 14:20:24] Request: GET settings
+[2026-01-05 14:20:28] Request: GET settings
+[2026-01-05 14:20:28] Request: GET stats
+[2026-01-05 14:20:29] Request: GET settings
+[2026-01-05 14:20:29] Request: GET stats
+[2026-01-05 14:20:30] Request: GET settings
+[2026-01-05 14:20:30] Request: GET stats
+[2026-01-05 14:22:10] Request: GET stats
+[2026-01-05 14:22:18] Request: GET stats
+[2026-01-05 14:22:18] Request: GET settings
+[2026-01-05 14:22:25] Request: GET stats
+[2026-01-05 14:23:06] Auth failed: Session user_id not set
+[2026-01-05 14:23:34] Auth failed: Session user_id not set
+[2026-01-05 14:23:34] Auth failed: Session user_id not set
+[2026-01-05 14:26:19] Auth failed: Session user_id not set
+[2026-01-05 14:27:03] Auth failed: Session user_id not set
+[2026-01-05 14:28:09] Auth failed: Session user_id not set
+[2026-01-05 14:30:45] Request: GET stats
+[2026-01-05 14:30:45] Request: GET settings
+[2026-01-05 14:31:17] Request: POST create
+[2026-01-05 14:31:17] Raw Input: {"nis":"123","tujuan":"tes card overview terlambat","waktu_keluar":"2026-01-05 14:30","rencana_kembali":"2026-01-05 14:31","keterangan":""}
+[2026-01-05 14:31:17] Processing Create: NIS=123, Keluar=2026-01-05 14:30:00, Kembali=2026-01-05 14:31:00
+[2026-01-05 14:31:17] Validation Failed: Duplicate active permit for 123
+[2026-01-05 14:31:22] Request: GET list
+[2026-01-05 14:31:28] Request: GET settings
+[2026-01-05 14:31:28] Request: GET stats
+[2026-01-05 14:31:35] Request: GET stats
+[2026-01-05 14:31:40] Request: GET read
+[2026-01-05 14:31:57] Request: POST create
+[2026-01-05 14:31:57] Raw Input: {"nis":"123","tujuan":"tes tombol dan status","waktu_keluar":"2026-01-05 14:31","rencana_kembali":"2026-01-05 14:32","keterangan":""}
+[2026-01-05 14:31:57] Processing Create: NIS=123, Keluar=2026-01-05 14:31:00, Kembali=2026-01-05 14:32:00
+[2026-01-05 14:31:57] Validation Failed: Duplicate active permit for 123
+[2026-01-05 14:37:16] Request: GET stats
+[2026-01-05 14:37:16] Request: GET settings
+[2026-01-05 14:38:27] Request: GET stats
+[2026-01-05 14:38:27] Request: GET settings
+[2026-01-05 14:38:29] Request: GET list
+[2026-01-05 14:38:49] Request: POST create
+[2026-01-05 14:38:49] Raw Input: {"nis":"123","tujuan":"tes tombol dan status","waktu_keluar":"2026-01-05 14:38","rencana_kembali":"2026-01-05 14:40","keterangan":""}
+[2026-01-05 14:38:49] Processing Create: NIS=123, Keluar=2026-01-05 14:38:00, Kembali=2026-01-05 14:40:00
+[2026-01-05 14:38:49] Success Create ID: 17
+[2026-01-05 14:38:52] Request: GET stats
+[2026-01-05 14:38:52] Request: GET read
+[2026-01-05 14:39:22] Request: GET settings
+[2026-01-05 14:39:26] Request: GET list
+[2026-01-05 14:39:47] Request: GET settings
+[2026-01-05 14:39:48] Request: GET list
+[2026-01-05 14:39:49] Request: GET stats
+[2026-01-05 14:39:55] Request: GET read
+[2026-01-05 14:41:16] Request: GET settings
+[2026-01-05 14:41:16] Request: GET stats
+[2026-01-05 14:44:22] Request: POST create
+[2026-01-05 14:44:22] Raw Input: {"nis":"4565456456","tujuan":"tes terlambat","waktu_keluar":"2026-01-05 14:41","rencana_kembali":"2026-01-05 14:30","keterangan":""}
+[2026-01-05 14:44:22] Processing Create: NIS=4565456456, Keluar=2026-01-05 14:41:00, Kembali=2026-01-05 14:30:00
+[2026-01-05 14:44:22] Success Create ID: 18
+[2026-01-05 14:44:24] Request: GET stats
+[2026-01-05 14:44:24] Request: GET read
+[2026-01-05 14:46:03] Request: POST return
+[2026-01-05 14:46:04] Request: GET stats
+[2026-01-05 14:46:04] Request: GET list
+[2026-01-05 14:46:11] Request: GET settings
+[2026-01-05 14:46:15] Request: GET settings
+[2026-01-05 14:46:15] Request: GET stats
+[2026-01-05 14:47:31] Request: GET settings
+[2026-01-05 14:47:31] Request: GET stats
+[2026-01-05 14:47:49] Request: GET list
+[2026-01-05 15:09:30] Request: GET settings
+[2026-01-05 15:09:30] Request: GET stats
+[2026-01-05 15:11:19] Request: GET read
+[2026-01-05 15:15:45] Request: GET list
+[2026-01-05 15:21:42] Request: GET read
+[2026-01-05 15:47:44] Request: GET stats
+[2026-01-05 15:47:44] Request: GET settings
+[2026-01-05 15:47:55] Request: GET list
+[2026-01-05 15:47:57] Request: GET settings
+[2026-01-05 15:47:59] Request: GET stats

@@ -261,45 +261,64 @@
 
     <!-- Modal Raport Santri -->
     <div id="modalRaport"
-        class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-[2100] flex items-center justify-center p-4 overflow-y-auto">
+        class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-[2100] flex items-center justify-center p-4 overflow-y-auto">
         <div
-            class="bg-slate-800/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl w-full max-w-2xl p-6 relative my-8 max-h-[90vh] overflow-y-auto">
-            <button onclick="document.getElementById('modalRaport').style.display='none'"
-                class="absolute top-4 right-4 text-white text-2xl hover:text-red-400 transition-colors z-10">&times;</button>
+            class="bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl w-full max-w-2xl relative my-8 overflow-hidden">
 
-            <div class="text-center mb-6 pb-6 border-b border-white/10">
-                <div
-                    class="w-16 h-16 bg-indigo-500 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl">
-                    <i class='bx bxs-user'></i>
-                </div>
-                <h3 id="raportNama" class="text-2xl font-bold text-white mb-2">Nama Santri</h3>
-                <p class="text-slate-400" id="raportInfo">NIS: - | Kelas: -</p>
-                <div class="mt-3">
-                    <span class="badge badge-warning" id="totalPelanggaran">0 Pelanggaran</span>
-                </div>
-            </div>
-
-            <h4 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                <i class='bx bxs-file-archive'></i> Riwayat Pelanggaran
-            </h4>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="border-b border-white/10">
-                            <th class="text-left py-3 px-4 text-sm font-semibold text-slate-300">Tanggal</th>
-                            <th class="text-left py-3 px-4 text-sm font-semibold text-slate-300">Pelanggaran</th>
-                            <th class="text-left py-3 px-4 text-sm font-semibold text-slate-300">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="raportBody" class="divide-y divide-white/5">
-                        <!-- Data will be injected here -->
-                    </tbody>
-                </table>
-            </div>
-            <div class="mt-6 text-center">
+            <!-- Header with gradient -->
+            <div class="bg-gradient-to-r from-indigo-600/20 to-purple-600/20 border-b border-white/10 p-6">
                 <button onclick="document.getElementById('modalRaport').style.display='none'"
-                    class="px-6 py-3 border-2 border-slate-600 text-slate-300 hover:bg-slate-700/50 rounded-xl font-semibold transition-all">
-                    Tutup
+                    class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-red-500/50 text-white text-xl hover:text-white transition-all z-10">&times;</button>
+
+                <div class="text-center">
+                    <div
+                        class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl text-white shadow-lg shadow-indigo-500/30">
+                        <i class='bx bxs-user'></i>
+                    </div>
+                    <h3 id="raportNama" class="text-2xl font-bold text-white mb-2">Nama Santri</h3>
+                    <p class="text-slate-300 text-sm" id="raportInfo">NIS: - | Kelas: -</p>
+                    <div class="mt-4">
+                        <span
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                            id="totalPelanggaran">
+                            <i class='bx bx-error-circle'></i> 0 Pelanggaran
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6 max-h-[50vh] overflow-y-auto">
+                <h4 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <i class='bx bxs-file-archive text-indigo-400'></i> Riwayat Pelanggaran
+                </h4>
+                <div class="overflow-x-auto rounded-xl border border-white/10 bg-slate-900/50">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="bg-slate-800/80 border-b border-white/10">
+                                <th
+                                    class="text-left py-3 px-4 text-xs font-bold text-indigo-300 uppercase tracking-wider">
+                                    Tanggal</th>
+                                <th
+                                    class="text-left py-3 px-4 text-xs font-bold text-indigo-300 uppercase tracking-wider">
+                                    Pelanggaran</th>
+                                <th
+                                    class="text-center py-3 px-4 text-xs font-bold text-indigo-300 uppercase tracking-wider">
+                                    Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="raportBody" class="divide-y divide-white/5">
+                            <!-- Data will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-6 pt-0 text-center">
+                <button onclick="document.getElementById('modalRaport').style.display='none'"
+                    class="px-8 py-3 bg-slate-700/50 hover:bg-slate-600/50 border border-white/10 text-white rounded-xl font-semibold transition-all inline-flex items-center gap-2">
+                    <i class='bx bx-x'></i> Tutup
                 </button>
             </div>
         </div>
@@ -423,30 +442,52 @@
 
             if (res && res.length > 0) {
                 tbody.innerHTML = '';
-                document.getElementById('totalPelanggaran').innerText = `${res.length} Pelanggaran`;
+                document.getElementById('totalPelanggaran').innerHTML = `<i class='bx bx-error-circle'></i> ${res.length} Pelanggaran`;
+                document.getElementById('totalPelanggaran').className = 'inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-red-500/20 text-red-300 border border-red-500/30';
 
                 res.forEach(row => {
-                    let statusClass = 'badge-warning';
-                    if (row.status_penanganan === 'Selesai') statusClass = 'badge-success';
-                    if (row.status_penanganan?.includes('Belum')) statusClass = 'badge-danger';
+                    let statusClass = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
+                    let statusIcon = 'bx-time';
+                    if (row.status_penanganan === 'Selesai') {
+                        statusClass = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
+                        statusIcon = 'bx-check-circle';
+                    }
+                    if (row.status_penanganan?.includes('Belum')) {
+                        statusClass = 'bg-red-500/20 text-red-300 border-red-500/30';
+                        statusIcon = 'bx-x-circle';
+                    }
 
                     const statusText = row.status_penanganan || 'Belum Ditangani';
 
                     tbody.innerHTML += `
-                        <tr>
-                            <td>${row.tanggal_kejadian}</td>
-                            <td>
-                                <strong>${row.jenis_pelanggaran}</strong><br>
-                                <small class="text-muted">${row.kategori}</small>
+                        <tr class="hover:bg-white/5 transition-colors">
+                            <td class="py-3 px-4 text-slate-300 font-mono text-sm">${row.tanggal_kejadian}</td>
+                            <td class="py-3 px-4">
+                                <div class="text-white font-semibold">${row.jenis_pelanggaran}</div>
+                                <div class="text-xs text-slate-400 mt-0.5">${row.kategori}</div>
                             </td>
-                            <td><span class="badge ${statusClass}">${statusText}</span></td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border ${statusClass}">
+                                    <i class='bx ${statusIcon}'></i> ${statusText}
+                                </span>
+                            </td>
                         </tr>
                     `;
                 });
             } else {
-                tbody.innerHTML = '<tr><td colspan="3" class="text-center" style="padding: 20px;">🎉 Santri ini bersih! Belum ada catatan pelanggaran.</td></tr>';
-                document.getElementById('totalPelanggaran').innerText = '0 Pelanggaran';
-                document.getElementById('totalPelanggaran').className = 'badge badge-success';
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="text-center py-8">
+                            <div class="flex flex-col items-center gap-2">
+                                <i class='bx bx-happy-heart-eyes text-4xl text-emerald-400'></i>
+                                <span class="text-emerald-300 font-semibold">Santri ini bersih!</span>
+                                <span class="text-slate-400 text-sm">Belum ada catatan pelanggaran</span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('totalPelanggaran').innerHTML = '<i class="bx bx-check-circle"></i> 0 Pelanggaran';
+                document.getElementById('totalPelanggaran').className = 'inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
             }
         }
 

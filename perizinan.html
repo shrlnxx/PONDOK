@@ -119,11 +119,8 @@
             const main = document.querySelector('main');
             const contentContainer = document.createElement('div');
 
-<<<<<<< HEAD
-            contentContainer.innerHTML = `
-=======
             // Custom Layout for Permissions Module (with mobile hamburger button)
-            main.innerHTML = `
+            contentContainer.innerHTML = `
                 <!-- Mobile Menu Button (Fixed for mobile) -->
                 <div class="lg:hidden fixed top-4 left-4 z-50">
                     <button class="bg-slate-800/90 backdrop-blur-xl border border-white/10 p-3 rounded-xl text-white text-2xl hover:text-indigo-400 hover:bg-slate-700/90 transition-all shadow-lg" 
@@ -132,16 +129,7 @@
                     </button>
                 </div>
 
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 mt-16 lg:mt-0">
-                    <div>
-                        <h2 class="text-2xl font-bold text-white mb-1">Modul Perizinan</h2>
-                        <p class="text-slate-400">Kelola izin keluar masuk santri terintegrasi</p>
-                    </div>
-                    <div id="clock" class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-xl px-4 py-2 font-mono text-xl font-bold text-white">--:--</div>
-                </div>
-
->>>>>>> 51cb28ad1fb7b056ba90b7cfcef801fb68fac1ab
-                <div class="tabs">
+                <div class="tabs mt-4">
                     <button class="tab-btn active" onclick="switchTab('dashboard')"><i class='bx bxs-dashboard'></i> Dashboard Izin</button>
                     <button class="tab-btn" onclick="switchTab('input')"><i class='bx bxs-file-plus'></i> Input Izin</button>
                     <button class="tab-btn" onclick="switchTab('data')"><i class='bx bxs-data'></i> Data Perizinan</button>
@@ -187,24 +175,6 @@
                     </div>
                     <div class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
                         <h3 class="text-xl font-bold text-white mb-4">Aktivitas Terbaru</h3>
-<<<<<<< HEAD
-                        <div class="overflow-x-auto rounded-xl border border-white/5 bg-slate-900/30">
-                            <table class="w-full border-collapse">
-                                <thead>
-                                    <tr class="bg-indigo-900/50 backdrop-blur-sm border-b border-white/10">
-                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Waktu Keluar</th>
-                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Santri</th>
-                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Tujuan</th>
-                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Rencana Kembali</th>
-                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Status</th>
-                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="d-recent" class="divide-y divide-white/5">
-                                    <tr><td colspan="6" class="text-center py-8 text-slate-400">Memuat...</td></tr>
-                                </tbody>
-                            </table>
-=======
                         <!-- Responsive table wrapper with horizontal scroll on mobile -->
                         <div class="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0">
                             <div class="inline-block min-w-full align-middle">
@@ -226,7 +196,6 @@
                                     </table>
                                 </div>
                             </div>
->>>>>>> 51cb28ad1fb7b056ba90b7cfcef801fb68fac1ab
                         </div>
                         <!-- Mobile scroll hint -->
                         <p class="text-xs text-slate-500 mt-2 sm:hidden text-center">
@@ -337,23 +306,7 @@
                                 </div>
                             </div>
                         </div>
-<<<<<<< HEAD
-                        <div class="overflow-x-auto rounded-xl border border-white/5 bg-slate-900/30">
-                            <table class="w-full border-collapse">
-                                <thead>
-                                    <tr class="bg-indigo-900/50 backdrop-blur-sm border-b border-white/10">
-                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Waktu Keluar</th>
-                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Santri</th>
-                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Tujuan</th>
-                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Rencana Kembali</th>
-                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Status</th>
-                                        <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-indigo-300">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="listData" class="divide-y divide-white/5"></tbody>
-                            </table>
-=======
-                        <!-- Responsive table wrapper -->
+<!-- Responsive table wrapper -->
                         <div class="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0">
                             <div class="inline-block min-w-full align-middle">
                                 <div class="overflow-hidden rounded-xl border border-white/5 bg-slate-900/30">
@@ -372,7 +325,6 @@
                                     </table>
                                 </div>
                             </div>
->>>>>>> 51cb28ad1fb7b056ba90b7cfcef801fb68fac1ab
                         </div>
                         <!-- Mobile scroll hint -->
                         <p class="text-xs text-slate-500 mt-2 sm:hidden text-center">
@@ -567,55 +519,52 @@
             </span>`;
 
             let btn = '';
+            let printBtn = '';
+
             // Tampilkan tombol KEMBALI (checklist) selama santri belum kembali
             if (!r.waktu_kembali) {
                 btn = `<button onclick="doReturn(${r.id}, '${r.rencana_kembali}')" 
-                    class="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg shadow-lg hover:shadow-emerald-500/30 transform hover:scale-105 transition-all duration-300 text-xs tracking-wide" 
+                    class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg shadow-lg hover:shadow-emerald-500/30 transform hover:scale-105 transition-all duration-300 text-xs tracking-wide" 
                     title="Klik jika santri sudah kembali">
-                    <i class='bx bx-check-circle text-lg'></i> CEKLIS KEMBALI
+                    <i class='bx bx-check-circle text-lg'></i>
                 </button>`;
             }
-            const printBtn = `<button onclick="doPrint(${r.id})" 
-                class="inline-flex items-center gap-1.5 px-4 py-2 border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white rounded-lg font-semibold transition-all duration-300 text-xs backdrop-blur-sm" 
+
+            // Tombol print selalu ada
+            printBtn = `<button onclick="doPrint(${r.id})" 
+                class="inline-flex items-center gap-1.5 px-3 py-2 border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white rounded-lg font-semibold transition-all duration-300 text-xs backdrop-blur-sm" 
                 title="Cetak Surat">
                 <i class='bx bx-printer text-lg'></i>
             </button>`;
 
             return `
                 <tr class="${rowClass}">
-                    <td class="py-5 px-6">
+                    <td class="py-4 px-4 sm:px-6">
                         <span class="font-mono text-indigo-300 text-sm tracking-wider">${r.waktu_keluar}</span>
                     </td>
-                    <td class="py-5 px-6">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full bg-slate-800 border border-indigo-500/30 flex items-center justify-center shadow-lg relative group-hover:scale-110 transition-transform duration-300">
+                    <td class="py-4 px-4 sm:px-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-slate-800 border border-indigo-500/30 flex items-center justify-center shadow-lg">
                                 <i class='bx bxs-user text-indigo-400'></i>
                             </div>
                             <div>
-                                <div class="font-bold text-white text-base mb-1 tracking-wide">${r.nama}</div>
-                                <div class="flex gap-2">
-                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-500/10 text-blue-300 border border-blue-500/20 uppercase tracking-wider">
-                                        <i class='bx bxs-school mr-1'></i> ${r.kelas || '?'}
-                                    </span>
-                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-500/10 text-purple-300 border border-purple-500/20 uppercase tracking-wider">
-                                        <i class='bx bxs-building-house mr-1'></i> ${r.asrama || 'ASRAMA'}
-                                    </span>
+                                <div class="font-bold text-white text-sm mb-0.5">${r.nama}</div>
+                                <div class="flex gap-1 flex-wrap">
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-500/10 text-blue-300 border border-blue-500/20 uppercase">${r.kelas || '?'}</span>
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-500/10 text-purple-300 border border-purple-500/20 uppercase">${r.asrama || '-'}</span>
                                 </div>
                             </div>
                         </div>
                     </td>
-                    <td class="py-5 px-6">
-                        <div class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
-                            <span class="text-slate-300 text-sm font-medium">${r.tujuan_izin}</span>
-                        </div>
+                    <td class="py-4 px-4 sm:px-6">
+                        <span class="text-slate-300 text-sm">${r.tujuan_izin}</span>
                     </td>
-                    <td class="py-5 px-6">
-                        <span class="font-mono text-slate-400 text-sm tracking-wider">${r.rencana_kembali}</span>
+                    <td class="py-4 px-4 sm:px-6">
+                        <span class="font-mono text-slate-400 text-sm">${r.rencana_kembali}</span>
                     </td>
-                    <td class="py-5 px-6">${badge}</td>
-                    <td class="py-5 px-6">
-                        <div class="flex items-center gap-3">${btn}${printBtn}</div>
+                    <td class="py-4 px-4 sm:px-6">${badge}</td>
+                    <td class="py-4 px-4 sm:px-6">
+                        <div class="flex items-center gap-2">${btn}${printBtn}</div>
                     </td>
                 </tr>
             `;
