@@ -1,0 +1,6 @@
+[04-Jan-2026 16:21:42 Asia/Jakarta] PHP Fatal error:  Cannot redeclare log_debug() (previously declared in C:\laragon\www\PONDOK\api\config_debug.php:52) in C:\laragon\www\PONDOK\api\perizinan.php on line 9
+[04-Jan-2026 16:21:43 Asia/Jakarta] PHP Fatal error:  Cannot redeclare log_debug() (previously declared in C:\laragon\www\PONDOK\api\config_debug.php:52) in C:\laragon\www\PONDOK\api\perizinan.php on line 9
+[04-Jan-2026 16:21:44 Asia/Jakarta] PHP Fatal error:  Cannot redeclare log_debug() (previously declared in C:\laragon\www\PONDOK\api\config_debug.php:52) in C:\laragon\www\PONDOK\api\perizinan.php on line 9
+[04-Jan-2026 16:21:55 Asia/Jakarta] PHP Fatal error:  Cannot redeclare log_debug() (previously declared in C:\laragon\www\PONDOK\api\config_debug.php:52) in C:\laragon\www\PONDOK\api\perizinan.php on line 9
+[04-Jan-2026 16:21:55 Asia/Jakarta] PHP Fatal error:  Cannot redeclare log_debug() (previously declared in C:\laragon\www\PONDOK\api\config_debug.php:52) in C:\laragon\www\PONDOK\api\perizinan.php on line 9
+[04-Jan-2026 16:22:16 Asia/Jakarta] PHP Fatal error:  Cannot redeclare log_debug() (previously declared in C:\laragon\www\PONDOK\api\config_debug.php:52) in C:\laragon\www\PONDOK\api\perizinan.php on line 9

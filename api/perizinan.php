@@ -1,11 +1,11 @@
 <?php
-require_once 'config.php';
+// TEMPORARY: Use debug config to see errors
+require_once 'config_debug.php';
 
-// ENABLE DEBUGGING LOG
-function log_debug($msg)
-{
-    file_put_contents('debug_log.txt', date('[Y-m-d H:i:s] ') . $msg . PHP_EOL, FILE_APPEND);
-}
+// Wrap everything in try-catch to catch ALL errors
+try {
+
+// log_debug() function already defined in config_debug.php - no need to redeclare
 
 // Auth Check
 if (!isset($_SESSION['user_id'])) {
@@ -121,7 +121,7 @@ if ($action == 'list') {
     $end = $_GET['end'] ?? '';
     $status = $_GET['status'] ?? '';
 
-    $sql = "SELECT p.*, s.nama, s.kelas, s.asrama, u.fullname as petugas 
+    $sql = "SELECT p.*, s.nama, s.kelas, s.asrama, u.username as petugas 
             FROM perizinan p 
             JOIN santri s ON p.santri_nis = s.nis
             LEFT JOIN users u ON p.petugas_keluar_id = u.id 
@@ -216,7 +216,7 @@ if ($action == 'return' && $method == 'POST') {
 // 5. GET/SET SETTINGS
 if ($action == 'settings') {
     if ($method == 'GET') {
-        $stmt = $pdo->query("SELECT * FROM perizinan_settings");
+        $stmt = $pdo->query("SELECT setting_key, setting_value FROM perizinan_settings");
         $data = $stmt->fetchAll(PDO::FETCH_KEY_PAIR); // key => value
         send_json($data);
     } elseif ($method == 'POST') {
@@ -233,7 +233,7 @@ if ($action == 'settings') {
 if ($action == 'read') {
     $id = $_GET['id'] ?? 0;
     $stmt = $pdo->prepare("
-        SELECT p.*, s.nama, s.kelas, s.asrama, u.fullname as petugas_nama
+        SELECT p.*, s.nama, s.kelas, s.asrama, u.username as petugas_nama
         FROM perizinan p
         JOIN santri s ON p.santri_nis = s.nis
         LEFT JOIN users u ON p.petugas_keluar_id = u.id
@@ -251,3 +251,15 @@ if ($action == 'read') {
         send_json(['status' => 'error', 'message' => 'Not Found'], 404);
     }
 }
+
+// Catch ALL errors and return as JSON
+} catch (Throwable $e) {
+    log_debug("FATAL ERROR: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine());
+    send_json([
+        'status' => 'error',
+        'message' => 'Server Error: ' . $e->getMessage(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine()
+    ], 500);
+}
+?>

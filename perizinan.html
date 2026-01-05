@@ -119,7 +119,28 @@
             const main = document.querySelector('main');
             const contentContainer = document.createElement('div');
 
+<<<<<<< HEAD
             contentContainer.innerHTML = `
+=======
+            // Custom Layout for Permissions Module (with mobile hamburger button)
+            main.innerHTML = `
+                <!-- Mobile Menu Button (Fixed for mobile) -->
+                <div class="lg:hidden fixed top-4 left-4 z-50">
+                    <button class="bg-slate-800/90 backdrop-blur-xl border border-white/10 p-3 rounded-xl text-white text-2xl hover:text-indigo-400 hover:bg-slate-700/90 transition-all shadow-lg" 
+                            onclick="document.getElementById('sidebar').classList.add('active'); document.getElementById('sidebar-overlay').classList.remove('hidden')">
+                        <i class='bx bx-menu'></i>
+                    </button>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 mt-16 lg:mt-0">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-1">Modul Perizinan</h2>
+                        <p class="text-slate-400">Kelola izin keluar masuk santri terintegrasi</p>
+                    </div>
+                    <div id="clock" class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-xl px-4 py-2 font-mono text-xl font-bold text-white">--:--</div>
+                </div>
+
+>>>>>>> 51cb28ad1fb7b056ba90b7cfcef801fb68fac1ab
                 <div class="tabs">
                     <button class="tab-btn active" onclick="switchTab('dashboard')"><i class='bx bxs-dashboard'></i> Dashboard Izin</button>
                     <button class="tab-btn" onclick="switchTab('input')"><i class='bx bxs-file-plus'></i> Input Izin</button>
@@ -166,6 +187,7 @@
                     </div>
                     <div class="bg-slate-800/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
                         <h3 class="text-xl font-bold text-white mb-4">Aktivitas Terbaru</h3>
+<<<<<<< HEAD
                         <div class="overflow-x-auto rounded-xl border border-white/5 bg-slate-900/30">
                             <table class="w-full border-collapse">
                                 <thead>
@@ -182,7 +204,34 @@
                                     <tr><td colspan="6" class="text-center py-8 text-slate-400">Memuat...</td></tr>
                                 </tbody>
                             </table>
+=======
+                        <!-- Responsive table wrapper with horizontal scroll on mobile -->
+                        <div class="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0">
+                            <div class="inline-block min-w-full align-middle">
+                                <div class="overflow-hidden rounded-xl border border-white/5 bg-slate-900/30">
+                                    <table class="min-w-full border-collapse">
+                                        <thead>
+                                            <tr class="bg-indigo-900/50 backdrop-blur-sm border-b border-white/10">
+                                                <th class="text-left py-4 px-4 sm:px-6 text-xs font-bold uppercase tracking-wider text-indigo-300 whitespace-nowrap">Waktu Keluar</th>
+                                                <th class="text-left py-4 px-4 sm:px-6 text-xs font-bold uppercase tracking-wider text-indigo-300 whitespace-nowrap">Santri</th>
+                                                <th class="text-left py-4 px-4 sm:px-6 text-xs font-bold uppercase tracking-wider text-indigo-300 whitespace-nowrap">Tujuan</th>
+                                                <th class="text-left py-4 px-4 sm:px-6 text-xs font-bold uppercase tracking-wider text-indigo-300 whitespace-nowrap">Rencana Kembali</th>
+                                                <th class="text-left py-4 px-4 sm:px-6 text-xs font-bold uppercase tracking-wider text-indigo-300 whitespace-nowrap">Status</th>
+                                                <th class="text-left py-4 px-4 sm:px-6 text-xs font-bold uppercase tracking-wider text-indigo-300 whitespace-nowrap">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="d-recent" class="divide-y divide-white/5">
+                                            <tr><td colspan="6" class="text-center py-8 text-slate-400">Memuat...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+>>>>>>> 51cb28ad1fb7b056ba90b7cfcef801fb68fac1ab
                         </div>
+                        <!-- Mobile scroll hint -->
+                        <p class="text-xs text-slate-500 mt-2 sm:hidden text-center">
+                            <i class='bx bx-swipe-left'></i> Geser ke kiri untuk melihat lebih banyak
+                        </p>
                     </div>
                 </div>
 
@@ -240,7 +289,7 @@
                             <!-- ADVANCED FILTER -->
                             <div class="bg-black/20 border border-white/5 rounded-xl p-4 mb-6">
                                 <small class="block text-slate-400 mb-3 font-medium uppercase tracking-wider">Filter Data:</small>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-3">
                                     <div>
                                         <label class="block text-xs text-slate-400 mb-1">Dari Tanggal</label>
                                         <input type="date" id="startDate"
@@ -278,9 +327,17 @@
                                             <i class='bx bx-filter'></i> Tampilkan
                                         </button>
                                     </div>
+                                    <div class="flex items-end">
+                                        <button onclick="resetFilter()"
+                                            class="w-full px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                                            title="Reset semua filter">
+                                            <i class='bx bx-reset'></i> Reset
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+<<<<<<< HEAD
                         <div class="overflow-x-auto rounded-xl border border-white/5 bg-slate-900/30">
                             <table class="w-full border-collapse">
                                 <thead>
@@ -295,7 +352,32 @@
                                 </thead>
                                 <tbody id="listData" class="divide-y divide-white/5"></tbody>
                             </table>
+=======
+                        <!-- Responsive table wrapper -->
+                        <div class="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0">
+                            <div class="inline-block min-w-full align-middle">
+                                <div class="overflow-hidden rounded-xl border border-white/5 bg-slate-900/30">
+                                    <table class="min-w-full border-collapse">
+                                        <thead>
+                                            <tr class="bg-indigo-900/50 backdrop-blur-sm border-b border-white/10">
+                                                <th class="text-left py-4 px-4 sm:px-6 text-xs font-bold uppercase tracking-wider text-indigo-300 whitespace-nowrap">Waktu Keluar</th>
+                                                <th class="text-left py-4 px-4 sm:px-6 text-xs font-bold uppercase tracking-wider text-indigo-300 whitespace-nowrap">Santri</th>
+                                                <th class="text-left py-4 px-4 sm:px-6 text-xs font-bold uppercase tracking-wider text-indigo-300 whitespace-nowrap">Tujuan</th>
+                                                <th class="text-left py-4 px-4 sm:px-6 text-xs font-bold uppercase tracking-wider text-indigo-300 whitespace-nowrap">Rencana Kembali</th>
+                                                <th class="text-left py-4 px-4 sm:px-6 text-xs font-bold uppercase tracking-wider text-indigo-300 whitespace-nowrap">Status</th>
+                                                <th class="text-left py-4 px-4 sm:px-6 text-xs font-bold uppercase tracking-wider text-indigo-300 whitespace-nowrap">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="listData" class="divide-y divide-white/5"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+>>>>>>> 51cb28ad1fb7b056ba90b7cfcef801fb68fac1ab
                         </div>
+                        <!-- Mobile scroll hint -->
+                        <p class="text-xs text-slate-500 mt-2 sm:hidden text-center">
+                            <i class='bx bx-swipe-left'></i> Geser ke kiri untuk melihat lebih banyak
+                        </p>
                     </div>
                 </div>
 
@@ -367,18 +449,28 @@
         async function loadDashboard() {
             const res = await apiCall('perizinan.php?action=stats');
             if (res) {
-                document.getElementById('d-today').innerText = res.today;
-                document.getElementById('d-active').innerText = res.active;
-                document.getElementById('d-late').innerText = res.late;
+                // Safe access with fallback to 0
+                document.getElementById('d-today').innerText = res.today || 0;
+                document.getElementById('d-active').innerText = res.active || 0;
+                document.getElementById('d-late').innerText = res.late || 0;
 
                 const tbody = document.getElementById('d-recent');
                 tbody.innerHTML = '';
-                if (res.recent.length === 0) tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Belum ada aktivitas</td></tr>';
-                else {
+
+                // Check if recent exists and is an array
+                if (!res.recent || !Array.isArray(res.recent) || res.recent.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-slate-400">Belum ada aktivitas</td></tr>';
+                } else {
                     res.recent.forEach(r => {
                         tbody.innerHTML += renderRow(r);
                     });
                 }
+            } else {
+                // If API fails completely, show 0s
+                document.getElementById('d-today').innerText = '0';
+                document.getElementById('d-active').innerText = '0';
+                document.getElementById('d-late').innerText = '0';
+                document.getElementById('d-recent').innerHTML = '<tr><td colspan="6" class="text-center py-8 text-slate-400">Tidak dapat memuat data</td></tr>';
             }
         }
 
@@ -410,6 +502,30 @@
             } else {
                 res.forEach(r => tbody.innerHTML += renderRow(r));
             }
+        }
+
+        // Reset Filter Function
+        function resetFilter() {
+            // Clear all filter inputs
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterNama').value = '';
+            document.getElementById('filterKelas').value = '';
+
+            // Reload data without filters
+            loadList();
+
+            // Visual feedback
+            const btn = event.target.closest('button');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="bx bx-check"></i> Reset!';
+            btn.classList.add('bg-green-600');
+
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.remove('bg-green-600');
+            }, 1000);
         }
 
         function renderRow(r) {
@@ -618,7 +734,9 @@
                 try {
                     if (statusDiv) statusDiv.innerText = 'Mengirim data ke server...';
 
+                    console.log('📤 Sending data:', data);
                     const res = await apiCall('perizinan.php?action=create', 'POST', data);
+                    console.log('📥 Response:', res);
 
                     if (res && res.status === 'success') {
                         if (statusDiv) {
@@ -644,12 +762,24 @@
                         setTimeout(() => { if (statusDiv) statusDiv.innerText = ''; }, 3000);
                         switchTab('dashboard');
                     } else {
-                        const msg = 'Gagal: ' + (res ? res.message : 'Unknown Error');
+                        // Better error message with more details
+                        let errorMsg = 'Gagal menyimpan izin';
+
+                        if (res && res.message) {
+                            errorMsg = res.message;
+                        } else if (!res) {
+                            errorMsg = 'Tidak ada response dari server. Cek console untuk detail.';
+                        }
+
+                        console.error('❌ Error detail:', res);
+
                         if (statusDiv) {
-                            statusDiv.innerText = msg;
+                            statusDiv.innerText = errorMsg;
                             statusDiv.style.color = '#ef4444';
                         }
-                        alert(msg);
+
+                        // Show more detailed alert
+                        alert('⚠️ GAGAL MENYIMPAN IZIN\n\n' + errorMsg + '\n\nSARAN:\n1. Pastikan database sudah disetup\n2. Jalankan fix_perizinan.php\n3. Refresh halaman ini\n4. Buka Console (F12) untuk detail error');
                     }
                 } catch (error) {
                     const msg = 'Error Sistem: ' + error.message;

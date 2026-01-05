@@ -1,8 +1,12 @@
 <?php
-// 1. CONFIGURATION
-// Matikan semua output error ke browser agar RESPON JSON BERSIH
-error_reporting(0);
-ini_set('display_errors', 0);
+// config_debug.php - Temporary debug config
+// USE THIS FOR DEBUGGING, GANTI KEMBALI KE config.php SETELAH SELESAI
+
+// ENABLE ERROR DISPLAY FOR DEBUGGING
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/php_errors.log');
 
 // Set zona waktu
 date_default_timezone_set('Asia/Jakarta');
@@ -13,7 +17,7 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// 2. DATABASE CONNECTION
+// DATABASE CONNECTION
 $host = 'localhost';
 $dbname = 'ponw6793_keamanan';
 $username = 'ponw6793_keamanan';
@@ -24,22 +28,29 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    // Jika koneksi gagal, kirim JSON error (bukan text HTML!)
     http_response_code(500);
-    echo json_encode(['status' => 'error', 'message' => 'Database Connection Failed']);
+    echo json_encode([
+        'status' => 'error', 
+        'message' => 'Database Connection Failed: ' . $e->getMessage()
+    ]);
     exit;
 }
 
-// 3. SESSION MANAGEMENT
-// Mulai session jika belum ada
+// SESSION MANAGEMENT
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 4. HELPER FUNCTIONS
+// HELPER FUNCTIONS
 function send_json($data, $status_code = 200)
 {
     http_response_code($status_code);
     echo json_encode($data);
     exit;
 }
+
+function log_debug($msg)
+{
+    file_put_contents(__DIR__ . '/debug_log.txt', date('[Y-m-d H:i:s] ') . $msg . PHP_EOL, FILE_APPEND);
+}
+?>
